@@ -10,9 +10,11 @@ localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.strin
             [[10,20, 5,5],[12,19,1,1],[12,16,15,3],[22,12,7,7],[25,11,1,1],[25,10,6,1],[10,13,2,1],[7,12,1,3]],
             [],
             []],
+            //enemy is done like [Xposition,Yposition,life,damage,xp]
             enemies: [[[4,4,80,400,50],[5,5,100,30,40],[20,5,100,25,20]],[],[],[]],
             exit:[[34,22],[22,22],[],[]],
-            boss:undefined,edit: false, playerX: 3 , playerY: 3,floor:0,
+            //boss is done like [Xposition,Yposition,life,damage,xp]
+            boss:[0,0,1000,15],edit: false, playerX: 3 , playerY: 3,floor:0,
             initial: {
                 enemies: [[[4,4,80,400,50],[5,5,100,30,40],[20,5,100,25,20]],[],[],[]],
                 playerX: 3,
@@ -152,8 +154,6 @@ constructor(){
 ##############################################################################################################################
 ##############################################################################################################################
 ##############################################################################################################################
-##############################################################################################################################
-##############################################################################################################################
 */
 //function Used for the movement of the Player and the Camera
 move(key){
@@ -280,8 +280,6 @@ switch(key.code){
 ##############################################################################################################################
 ##############################################################################################################################
 ##############################################################################################################################
-##############################################################################################################################
-##############################################################################################################################
 */
 //This Function shows the Position of the Area you are hovering on if you are on Edit Mode
 showThings(x,y){
@@ -295,6 +293,31 @@ showThings(x,y){
 /*
 ##############################################################################################################################
 ##############################################################################################################################
+##############################################################################################################################
+*/
+modifyfloor(mode,floorToDelete){
+    var state=JSON.parse(JSON.stringify(this.state));
+    console.log(floorToDelete)
+    if(floorToDelete){
+        state.positions.splice(floorToDelete,1);
+        state.exit.splice(floorToDelete,1);
+        state.enemies.splice(floorToDelete,1);
+        state.playerStartingPositions.splice(floorToDelete,1);
+        this.setState(state);
+        document.getElementById("chooseFloorToDelete").style.display="none";
+    }
+    else if(mode){
+        document.getElementById("chooseFloorToDelete").style.display="block";
+    }
+    else{
+        state.positions.push([]);
+        state.exit.push([]);
+        state.enemies.push([]);
+        state.playerStartingPositions.push([]);
+        this.setState(state);
+    }
+}
+/*
 ##############################################################################################################################
 ##############################################################################################################################
 ##############################################################################################################################
@@ -323,12 +346,25 @@ componentWillUpdate(nextProps,nextState){
 ##############################################################################################################################
 ##############################################################################################################################
 ##############################################################################################################################
-##############################################################################################################################
-##############################################################################################################################
 */
 render(){  
 return (
 <div>
+    <div id="changeBossPosition">
+        X: <input type="number" id="bossX" />
+        Y: <input type="number" id="bossY" />
+        <button onClick={()=>{
+            document.getElementById("bossX").value="";
+            document.getElementById("bossY").value="";
+            document.getElementById("changeBossPosition").style.display="none";
+            }}>Cancel</button>
+        <button onClick={()=>{
+            document.getElementById("changeBossPosition").style.display="none";
+            this.setState({boss:[JSON.parse(document.getElementById("bossX").value),JSON.parse(document.getElementById("bossY").value),this.state.boss[2],this.state.boss[3]]});
+            document.getElementById("bossX").value="";
+            document.getElementById("bossY").value="";
+            }}>Change Position</button>
+    </div>
     <div id="chooseLevel">
         {
             JSON.parse(localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames')).map((info,index)=>(
@@ -339,8 +375,13 @@ return (
             ))
         }
     </div>
+<div id="chooseFloorToDelete">
+    {
+    this.state.exit.map((info,index)=><button onClick={()=>{this.modifyfloor(false,index)}} key={"floorButtonToDelete "+(index+1)}>{index+1}</button>)
+    }
+    <button onClick={()=>{document.getElementById("chooseFloorToDelete").style.display="none"}}>Cancel</button>
+</div>
 <div className="controls">
-
     
 <span>life: {this.state.life}</span><span>Weapon:</span><span>Level: {this.state.level}</span><span>damage: {this.state.damage}</span><span>xp: {this.state.xp}</span><span>floor:{this.state.floor+1}</span>
 
@@ -364,14 +405,25 @@ return (
             document.getElementById('addArea').style.display="block";
             }}>Add Area</button>
         <button onClick={()=>{
-            if(able){alert("Remenber to change the Boss position because it's always on the last floor"); able=false;
-            
+            this.modifyfloor();
+            if(able){alert("Remenber to change the Boss position because it's always on the last floor"); 
+            able=false;
             }}}>Add Floor</button>
         {
                 this.state.exit.map((info,index)=><button onClick={()=>{game.setState({floor: index,playerX:game.state.playerStartingPositions[index][0],playerY:game.state.playerStartingPositions[index][1]});}} key={"floorButton "+(index+1)}>{index+1}</button>)
         }
-        <button>D elete Floor</button>
-    
+        <button onClick={()=>{this.modifyfloor(true)}}>Delete Floor</button>
+
+        <button>Delete Enemies</button>
+        <button>Add Enemies</button>
+        <button>Change Starting Position</button>
+        <button>Change Exit Position</button>
+        <button onClick={()=>{
+            var lastfloor = game.state.exit.length-1;
+            this.setState({floor: lastfloor,playerX:this.state.playerStartingPositions[lastfloor][0],playerY:this.state.playerStartingPositions[lastfloor][1]});
+            document.getElementById("changeBossPosition").style.display="block";
+            }}>Change Boss Position</button>
+
     
 
     <div id="addArea">
