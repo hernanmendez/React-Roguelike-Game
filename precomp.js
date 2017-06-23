@@ -363,11 +363,14 @@ return (
             document.getElementById('addAreaButton').style.display="none";
             document.getElementById('addArea').style.display="block";
             }}>Add Area</button>
-        <button onClick={()=>{if(able){alert("Remenber to change the Boss position because it's always on the last floor"); able=false}}}>Add Floor</button>
+        <button onClick={()=>{
+            if(able){alert("Remenber to change the Boss position because it's always on the last floor"); able=false;
+            
+            }}}>Add Floor</button>
         {
                 this.state.exit.map((info,index)=><button onClick={()=>{game.setState({floor: index,playerX:game.state.playerStartingPositions[index][0],playerY:game.state.playerStartingPositions[index][1]});}} key={"floorButton "+(index+1)}>{index+1}</button>)
         }
-        <button>Delete Floor</button>
+        <button>D elete Floor</button>
     
     
 
@@ -395,7 +398,7 @@ return (
     <button onClick={()=>{
         document.getElementById('addAreaButton').style.display="inline";
         document.getElementById('addArea').style.display="none";
-        let newPosition = [document.getElementById('addAreaInput1').value,document.getElementById('addAreaInput2').value,document.getElementById('addAreaInput3').value,document.getElementById('addAreaInput4').value];
+        let newPosition = [JSON.parse(document.getElementById('addAreaInput1').value),JSON.parse(document.getElementById('addAreaInput2').value),JSON.parse(document.getElementById('addAreaInput3').value),JSON.parse(document.getElementById('addAreaInput4').value)];
         let positions = this.state.positions;
         positions[this.state.floor].push(newPosition);
         this.setState({positions: positions});
