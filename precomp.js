@@ -12,7 +12,7 @@ localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.strin
             []],
             //enemy is done like [Xposition,Yposition,life,damage,xp]
             enemies: [[[4,4,80,400,50],[5,5,100,30,40],[20,5,100,25,20]],[],[],[]],
-            exit:[[34,22],[22,22],[],[]],
+            exit:[[34,22],[22,22],[]],
             //boss is done like [Xposition,Yposition,life,damage,xp]
             boss:[0,0,1000,15],edit: false, playerX: 3 , playerY: 3,floor:0,
             initial: {
@@ -391,7 +391,7 @@ return (
     </div>
 <div id="chooseFloorToDelete">
     {
-    this.state.exit.map((info,index)=><button onClick={()=>{this.modifyfloor(false,index)}} key={"floorButtonToDelete "+(index+1)}>{index+1}</button>)
+    this.state.playerStartingPositions.map((info,index)=><button onClick={()=>{this.modifyfloor(false,index)}} key={"floorButtonToDelete "+(index+1)}>{index+1}</button>)
     }
     <button onClick={()=>{document.getElementById("chooseFloorToDelete").style.display="none"}}>Cancel</button>
 </div>
@@ -424,14 +424,20 @@ return (
             able=false;
             }}}>Add Floor</button>
         {
-                this.state.exit.map((info,index)=><button onClick={()=>{game.setState({floor: index,playerX:game.state.playerStartingPositions[index][0],playerY:game.state.playerStartingPositions[index][1]});}} key={"floorButton "+(index+1)}>{index+1}</button>)
+                this.state.playerStartingPositions.map((info,index)=><button onClick={()=>{game.setState({floor: index,playerX:game.state.playerStartingPositions[index][0],playerY:game.state.playerStartingPositions[index][1]});}} key={"floorButton "+(index+1)}>{index+1}</button>)
         }
         <button onClick={()=>{this.modifyfloor(true)}}>Delete Floor</button>
-
+        {
+            (this.state.name)?<button>Save Changes</button>:<button>Save Current Custom Level As</button>
+        }
+        <button>Make a Copy of this level</button>
+        <button>Share this Level</button>
         <button>Delete Enemies</button>
         <button>Add Enemies</button>
         <button>Change Starting Position</button>
-        <button>Change Exit Position</button>
+        {
+        (this.state.floor==this.state.exit.length)?"":(<button>Change Exit Position</button>)
+        }
         <button onClick={()=>{
             var lastfloor = game.state.exit.length-1;
             this.setState({floor: lastfloor,playerX:this.state.playerStartingPositions[lastfloor][0],playerY:this.state.playerStartingPositions[lastfloor][1]});
@@ -495,7 +501,9 @@ return (
 {
     this.state.enemies[this.state.floor].map((info,index)=>(<Enemys x={info[0]} y={info[1]} key={'enemy'+index}/>))   
 }
-<Exit x={this.state.exit[this.state.floor][0]} y={this.state.exit[this.state.floor][1]} />
+{
+(this.state.floor==this.state.exit.length)?"":<Exit x={this.state.exit[this.state.floor][0]} y={this.state.exit[this.state.floor][1]} />
+}
 </div>
 <div className='player' style={{
         width: '1rem',

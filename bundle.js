@@ -9537,7 +9537,7 @@ localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stri
     name: 'Default', life: 400, weapon: '', damage: 20, level: 0, xpRequired: [50, 100, 210, 340, 500, 760, 1000, 1200, 1600, 2000], xp: 0, x: 0, y: 0, dead: false, positions: [[[2, 2, 10, 10], [12, 3, 1, 1], [13, 2, 5, 5], [18, 5, 1, 1], [19, 2, 4, 10], [15, 7, 1, 10], [8, 17, 20, 5], [10, 22, 1, 1], [25, 22, 1, 1], [23, 3, 5, 1], [23, 9, 1, 1], [24, 7, 7, 9], [7, 23, 7, 6], [22, 23, 8, 3], [28, 3, 7, 10], [34, 1, 4, 5], [25, 16, 1, 1], [28, 18, 5, 1], [32, 13, 1, 6], [32, 19, 5, 5]], [[10, 20, 5, 5], [12, 19, 1, 1], [12, 16, 15, 3], [22, 12, 7, 7], [25, 11, 1, 1], [25, 10, 6, 1], [10, 13, 2, 1], [7, 12, 1, 3]], [], []],
     //enemy is done like [Xposition,Yposition,life,damage,xp]
     enemies: [[[4, 4, 80, 400, 50], [5, 5, 100, 30, 40], [20, 5, 100, 25, 20]], [], [], []],
-    exit: [[34, 22], [22, 22], [], []],
+    exit: [[34, 22], [22, 22], []],
     //boss is done like [Xposition,Yposition,life,damage,xp]
     boss: [0, 0, 1000, 15], edit: false, playerX: 3, playerY: 3, floor: 0,
     initial: {
@@ -9947,7 +9947,7 @@ class Game extends React.Component {
             React.createElement(
                 "div",
                 { id: "chooseFloorToDelete" },
-                this.state.exit.map((info, index) => React.createElement(
+                this.state.playerStartingPositions.map((info, index) => React.createElement(
                     "button",
                     { onClick: () => {
                             this.modifyfloor(false, index);
@@ -10047,7 +10047,7 @@ class Game extends React.Component {
                             } },
                         "Add Floor"
                     ),
-                    this.state.exit.map((info, index) => React.createElement(
+                    this.state.playerStartingPositions.map((info, index) => React.createElement(
                         "button",
                         { onClick: () => {
                                 game.setState({ floor: index, playerX: game.state.playerStartingPositions[index][0], playerY: game.state.playerStartingPositions[index][1] });
@@ -10060,6 +10060,25 @@ class Game extends React.Component {
                                 this.modifyfloor(true);
                             } },
                         "Delete Floor"
+                    ),
+                    this.state.name ? React.createElement(
+                        "button",
+                        null,
+                        "Save Changes"
+                    ) : React.createElement(
+                        "button",
+                        null,
+                        "Save Current Custom Level As"
+                    ),
+                    React.createElement(
+                        "button",
+                        null,
+                        "Make a Copy of this level"
+                    ),
+                    React.createElement(
+                        "button",
+                        null,
+                        "Share this Level"
                     ),
                     React.createElement(
                         "button",
@@ -10076,7 +10095,7 @@ class Game extends React.Component {
                         null,
                         "Change Starting Position"
                     ),
-                    React.createElement(
+                    this.state.floor == this.state.exit.length ? "" : React.createElement(
                         "button",
                         null,
                         "Change Exit Position"
@@ -10148,7 +10167,7 @@ class Game extends React.Component {
                     { className: "game" },
                     this.state.positions[this.state.floor].map((info, index) => React.createElement(Area, { x: info[0], y: info[1], width: info[2], height: info[3], edit: this.state.edit, index: index, key: index })),
                     this.state.enemies[this.state.floor].map((info, index) => React.createElement(Enemys, { x: info[0], y: info[1], key: 'enemy' + index })),
-                    React.createElement(Exit, { x: this.state.exit[this.state.floor][0], y: this.state.exit[this.state.floor][1] })
+                    this.state.floor == this.state.exit.length ? "" : React.createElement(Exit, { x: this.state.exit[this.state.floor][0], y: this.state.exit[this.state.floor][1] })
                 ),
                 React.createElement("div", { className: "player", style: {
                         width: '1rem',
