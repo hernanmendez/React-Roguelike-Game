@@ -1,6 +1,6 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
-
+//love
 localStorage.clear();
 
 localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify([{
