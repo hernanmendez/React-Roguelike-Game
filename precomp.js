@@ -4,8 +4,12 @@ var ReactDOM = require("react-dom");
 localStorage.clear();
 
 localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify([{
-
-        name: 'Default',life:400,weapon:'', damage:20, level:0,xpRequired:[50,100,210,340,500,760,1000,1200,1600,2000],xp: 0, x:0 , y:0 ,dead: false, positions:[
+    index: 0,
+        name: 'Default',life:400,weapon:'', damage:20, level:0,
+        xpRequired:[50,100,210,340,500,760,1000,1200,1600,2000],
+        xp: 0, 
+        x:0 , y:0 ,dead: false, 
+        positions:[
             [[2,2,10,10],[12,3,1,1],[13,2,5,5],[18,5,1,1],[19,2,4,10],[15,7,1,10],[8,17,20,5],[10,22,1,1],[25,22,1,1],[23,3,5,1],[23,9,1,1],[24,7,7,9],[7,23,7,6],[22,23,8,3],[28,3,7,10],[34,1,4,5],[25,16,1,1],[28,18,5,1],[32,13,1,6],[32,19,5,5]],
             [[10,20, 5,5],[12,19,1,1],[12,16,15,3],[22,12,7,7],[25,11,1,1],[25,10,6,1],[10,13,2,1],[7,12,1,3]],
             [],
@@ -25,8 +29,7 @@ localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.strin
                 life: 400 },
                 show:[false],playerStartingPositions:[[3,3],[12,22],[12,22],[12,22]]
     }]));
-    
-//localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames')
+    var storage = JSON.parse(localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames'));
 /*
 ##############################################################################################################################
 */
@@ -188,6 +191,12 @@ game.setState({y: game.state.y+moveY});
 }
 }
 //End of the Camera Function
+//sets the 4 spaces the boss sits on and puts it into an array
+let bossArea=[];
+bossArea.push(JSON.stringify([game.state.boss[0],game.state.boss[1]]));
+bossArea.push(JSON.stringify([game.state.boss[0]+1,game.state.boss[1]]));
+bossArea.push(JSON.stringify([game.state.boss[0],game.state.boss[1]+1]));
+bossArea.push(JSON.stringify([game.state.boss[0]+1,game.state.boss[1]+1]));
 //takes the the enemy positions on the level
 let enemies = game.state.enemies[game.state.floor].map(info=>JSON.stringify([info[0],info[1]]))
 switch(key.code){
@@ -207,8 +216,14 @@ switch(key.code){
             game.setState({xp: game.state.xp+enemies[game.state.floor][index][4]})
             enemies[game.state.floor].splice(index,1);
         }
-        if(life<=0)game.setState({dead:true});
-        game.setState({enemies: enemies,life: life});
+        game.setState({enemies: enemies,life: life,dead:(life<=0)});
+    }
+    else if(bossArea.indexOf(nextUp)>-1){
+            let boss = JSON.parse(JSON.stringify(game.state.boss));
+            boss[2]-= game.state.damage;
+            let life = game.state.life - boss[3];
+            game.setState({life: life,boss:boss,dead:(life<=0)});
+            if(boss[2]<=0){this.setState(JSON.parse(JSON.stringify(this.state.initial)));}
     }
     else if(nextUp == JSON.stringify(game.state.exit[game.state.floor]))  game.setState({floor: game.state.floor+1,playerX:game.state.playerStartingPositions[game.state.floor+1][0],playerY:game.state.playerStartingPositions[game.state.floor+1][1]});
     else if(ava.indexOf(nextUp) > -1) game.setState({playerY: game.state.playerY - 1});
@@ -227,8 +242,15 @@ switch(key.code){
             game.setState({xp: game.state.xp+enemies[game.state.floor][index][4]})
             enemies[game.state.floor].splice(index,1);
         }
-        if(life<=0)game.setState({dead:true});
-        game.setState({enemies: enemies,life: life});
+        game.setState({enemies: enemies,life: life,dead:(life<=0)});
+    }
+    else if(bossArea.indexOf(nextRight)>-1){
+            let boss = JSON.parse(JSON.stringify(game.state.boss));
+            boss[2]-= game.state.damage;
+            let life = game.state.life - boss[3];
+
+            game.setState({life: life,boss:boss,dead:(life<=0)});
+        if(boss[2]<=0){this.setState(JSON.parse(JSON.stringify(this.state.initial)));}
     }
     else if(nextRight == JSON.stringify(game.state.exit[game.state.floor]))  game.setState({floor: game.state.floor+1,playerX:game.state.playerStartingPositions[game.state.floor+1][0],playerY:game.state.playerStartingPositions[game.state.floor+1][1]});
     else if(ava.indexOf(nextRight) > -1) game.setState({playerX: game.state.playerX + 1});
@@ -247,8 +269,15 @@ switch(key.code){
             game.setState({xp: game.state.xp+enemies[game.state.floor][index][4]})
             enemies[game.state.floor].splice(index,1);
         }
-        if(life<=0)game.setState({dead:true});
-        game.setState({enemies: enemies,life: life});
+        game.setState({enemies: enemies,life: life,dead:(life<=0)});
+    }
+    else if(bossArea.indexOf(nextDown)>-1){
+            let boss = JSON.parse(JSON.stringify(game.state.boss));
+            boss[2]-= game.state.damage;
+            let life = game.state.life - boss[3];
+
+            game.setState({life: life,boss:boss,dead:(life<=0)});
+        if(boss[2]<=0){this.setState(JSON.parse(JSON.stringify(this.state.initial)));}
     }
     else if(nextDown == JSON.stringify(game.state.exit[game.state.floor]))  game.setState({floor: game.state.floor+1,playerX:game.state.playerStartingPositions[game.state.floor+1][0],playerY:game.state.playerStartingPositions[game.state.floor+1][1]});
     else if(ava.indexOf(nextDown) > -1) game.setState({playerY: game.state.playerY + 1});
@@ -267,8 +296,14 @@ switch(key.code){
             game.setState({xp: game.state.xp+enemies[game.state.floor][index][4]})
             enemies[game.state.floor].splice(index,1);
         }
-        if(life<=0)game.setState({dead:true});
-        game.setState({enemies: enemies,life: life});
+        game.setState({enemies: enemies,life: life,dead:(life<=0)});
+    }
+    else if(bossArea.indexOf(nextLeft)>-1){
+            let boss = JSON.parse(JSON.stringify(game.state.boss));
+            boss[2]-= game.state.damage;
+            let life = game.state.life - boss[3];
+            game.setState({life: life,boss:boss,dead:(life<=0)});
+        if(boss[2]<=0){this.setState(JSON.parse(JSON.stringify(this.state.initial)));}
     }
     else if(nextLeft == JSON.stringify(game.state.exit[game.state.floor])) game.setState({floor: game.state.floor+1,playerX:game.state.playerStartingPositions[game.state.floor+1][0],playerY:game.state.playerStartingPositions[game.state.floor+1][1]});
     else if(ava.indexOf(nextLeft) > -1) game.setState({playerX: game.state.playerX - 1});
@@ -310,10 +345,10 @@ modifyfloor(mode,floorToDelete){
         document.getElementById("chooseFloorToDelete").style.display="block";
     }
     else{
-        state.positions.push([]);
-        state.exit.push([]);
-        state.enemies.push([]);
-        state.playerStartingPositions.push([]);
+        state.positions.push([0,0,10,10]);
+        state.exit.push([0,0]);
+        state.enemies.push([2,2,10,10,300]);
+        state.playerStartingPositions.push([1,1]);
         this.setState(state);
     }
 }
@@ -324,7 +359,7 @@ modifyfloor(mode,floorToDelete){
 */
 //Sets the component to the variable 'game' so we can call functions outside the component
 componentWillMount(){
-    this.setState(JSON.parse(localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames'))[0]);
+    this.setState(JSON.parse(JSON.stringify(storage[0])));
     game = this;
 }
 
@@ -403,7 +438,32 @@ return (
 <button onClick={()=>{document.getElementById("chooseLevel").style.display='block'}}>Choose Level</button>
 
 
-<button>Make a custom Level</button>
+<button onClick={()=>{
+    this.setState({
+        index: storage.length,
+        name: "",
+        life:400,weapon:'', damage:1000, level:0,
+        xpRequired:[50,100,210,340,500,760,1000,1200,1600,2000],
+        xp: 0, 
+        positions: [[[0,0,10,10]]],
+        enemies: [[[2,2,10,10,300]]],
+        exit:[],
+        x:0 , y:0 ,dead: false, 
+        boss:[5,5,10,13],edit: false, playerX: 0 , playerY: 0,floor:0,
+        initial: {
+                enemies: [[[2,2,10,10,300]]],
+                playerX: 0,
+                playerY: 0,
+                xp: 0,
+                level: 0,
+                damage: 20,
+                life: 400 },
+                show:[false],playerStartingPositions:[[0,0]]
+
+
+
+    })
+    }}>Make a custom Level</button>
 
 
 {
@@ -431,19 +491,18 @@ return (
             (this.state.name)?<button>Save Changes</button>:<button>Save Current Custom Level As</button>
         }
         <button>Make a Copy of this level</button>
+        <button onClick={()=>{
+            storage[this.state.index] = JSON.parse(JSON.stringify(this.state));
+            localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify(storage));
+            }}>Save Session</button>
+        <button>Reset</button>
         <button>Share this Level</button>
         <button>Delete Enemies</button>
         <button>Add Enemies</button>
         <button>Change Starting Position</button>
         {
-        (this.state.floor==this.state.exit.length)?"":(<button>Change Exit Position</button>)
+        (this.state.floor==this.state.exit.length)?(<button onClick={()=>{document.getElementById("changeBossPosition").style.display="block";}}>Change Boss Stats</button>):(<button>Change Exit Position</button>)
         }
-        <button onClick={()=>{
-            var lastfloor = game.state.exit.length-1;
-            this.setState({floor: lastfloor,playerX:this.state.playerStartingPositions[lastfloor][0],playerY:this.state.playerStartingPositions[lastfloor][1]});
-            document.getElementById("changeBossPosition").style.display="block";
-            }}>Change Boss Stats</button>
-
     
 
     <div id="addArea">
@@ -502,7 +561,17 @@ return (
     this.state.enemies[this.state.floor].map((info,index)=>(<Enemys x={info[0]} y={info[1]} key={'enemy'+index}/>))   
 }
 {
-(this.state.floor==this.state.exit.length)?"":<Exit x={this.state.exit[this.state.floor][0]} y={this.state.exit[this.state.floor][1]} />
+(this.state.floor==this.state.exit.length)?(
+    <div style={{
+        width: "2rem",
+        height: "2rem",
+        backgroundColor: "red",
+        position: "absolute",
+        zIndex: 15000,
+        left: (this.state.x + this.state.boss[0]) + "rem",
+        top: (this.state.y + this.state.boss[1]) + "rem"
+        }}></div>
+):<Exit x={this.state.exit[this.state.floor][0]} y={this.state.exit[this.state.floor][1]} />
 }
 </div>
 <div className='player' style={{
