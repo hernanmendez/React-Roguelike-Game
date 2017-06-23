@@ -81,7 +81,43 @@
            background-color: rgba(255,255,255,0.7);
            z-index: 4;
        }
-       #changeBossPosition{
+       #changeBossStats{
+           position: absolute;
+           width: 100%;
+            height: 100%;
+           display: none;
+           background-color: rgba(255,255,255,0.7);
+           z-index: 4;
+       }
+       #win{
+           box-sizing: border-box; 
+           position: absolute;
+           width: 100%;
+            height: 100%;
+            display: none;
+            z-index: 4;
+            background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(200,200,0)), to(rgb(0,200,0)));
+            background-image: -webkit-linear-gradient(top, rgb(200,200,0), rgb(0,200,0));
+            background-image: -moz-linear-gradient(top, rgb(200,200,0), rgb(0,200,0));
+            background-image: linear-gradient(to bottom, rgb(200,200,0), rgb(0,200,0)); 
+       }
+       #win>div{
+           position: absolute;
+           width: 50%;
+           width: 50%;
+           border: 2px solid #999;
+           border-radius: 10px;
+           text-align: center;
+           background-color: #ddd;
+            margin-left: 25%;
+            margin-top: 10%;
+            font-size: 1rem;
+            color:#999;
+       }
+       #win>div>h1{
+           color:black;
+       }
+       #typeName{
            position: absolute;
            width: 100%;
             height: 100%;

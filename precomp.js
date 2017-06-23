@@ -2,7 +2,7 @@ var React = require("react");
 var ReactDOM = require("react-dom");
 
 localStorage.clear();
-
+if(!localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames')){
 localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify([{
     index: 0,
         name: 'Default',life:400,weapon:'', damage:20, level:0,
@@ -26,9 +26,11 @@ localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.strin
                 xp: 0,
                 level: 0,
                 damage: 20,
-                life: 400 },
+                life: 400,
+                boss:[0,0,1000,15],
+            floor:0},
                 show:[false],playerStartingPositions:[[3,3],[12,22],[12,22],[12,22]]
-    }]));
+    }]));}
     var storage = JSON.parse(localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames'));
 /*
 ##############################################################################################################################
@@ -223,7 +225,9 @@ switch(key.code){
             boss[2]-= game.state.damage;
             let life = game.state.life - boss[3];
             game.setState({life: life,boss:boss,dead:(life<=0)});
-            if(boss[2]<=0){this.setState(JSON.parse(JSON.stringify(this.state.initial)));}
+            if(boss[2]<=0){
+                document.getElementById("win").style.display="block";
+                game.setState(JSON.parse(JSON.stringify(game.state.initial)));}
     }
     else if(nextUp == JSON.stringify(game.state.exit[game.state.floor]))  game.setState({floor: game.state.floor+1,playerX:game.state.playerStartingPositions[game.state.floor+1][0],playerY:game.state.playerStartingPositions[game.state.floor+1][1]});
     else if(ava.indexOf(nextUp) > -1) game.setState({playerY: game.state.playerY - 1});
@@ -250,7 +254,9 @@ switch(key.code){
             let life = game.state.life - boss[3];
 
             game.setState({life: life,boss:boss,dead:(life<=0)});
-        if(boss[2]<=0){this.setState(JSON.parse(JSON.stringify(this.state.initial)));}
+        if(boss[2]<=0){
+            document.getElementById("win").style.display="block";
+            game.setState(JSON.parse(JSON.stringify(game.state.initial)));}
     }
     else if(nextRight == JSON.stringify(game.state.exit[game.state.floor]))  game.setState({floor: game.state.floor+1,playerX:game.state.playerStartingPositions[game.state.floor+1][0],playerY:game.state.playerStartingPositions[game.state.floor+1][1]});
     else if(ava.indexOf(nextRight) > -1) game.setState({playerX: game.state.playerX + 1});
@@ -277,7 +283,9 @@ switch(key.code){
             let life = game.state.life - boss[3];
 
             game.setState({life: life,boss:boss,dead:(life<=0)});
-        if(boss[2]<=0){this.setState(JSON.parse(JSON.stringify(this.state.initial)));}
+        if(boss[2]<=0){
+            document.getElementById("win").style.display="block";
+            game.setState(JSON.parse(JSON.stringify(game.state.initial)));}
     }
     else if(nextDown == JSON.stringify(game.state.exit[game.state.floor]))  game.setState({floor: game.state.floor+1,playerX:game.state.playerStartingPositions[game.state.floor+1][0],playerY:game.state.playerStartingPositions[game.state.floor+1][1]});
     else if(ava.indexOf(nextDown) > -1) game.setState({playerY: game.state.playerY + 1});
@@ -303,7 +311,9 @@ switch(key.code){
             boss[2]-= game.state.damage;
             let life = game.state.life - boss[3];
             game.setState({life: life,boss:boss,dead:(life<=0)});
-        if(boss[2]<=0){this.setState(JSON.parse(JSON.stringify(this.state.initial)));}
+        if(boss[2]<=0){
+            document.getElementById("win").style.display="block";
+            game.setState(JSON.parse(JSON.stringify(game.state.initial)));}
     }
     else if(nextLeft == JSON.stringify(game.state.exit[game.state.floor])) game.setState({floor: game.state.floor+1,playerX:game.state.playerStartingPositions[game.state.floor+1][0],playerY:game.state.playerStartingPositions[game.state.floor+1][1]});
     else if(ava.indexOf(nextLeft) > -1) game.setState({playerX: game.state.playerX - 1});
@@ -323,33 +333,6 @@ showThings(x,y){
     }
     else{
         game.setState({show:[true,x,y]})
-    }
-}
-/*
-##############################################################################################################################
-##############################################################################################################################
-##############################################################################################################################
-*/
-modifyfloor(mode,floorToDelete){
-    var state=JSON.parse(JSON.stringify(this.state));
-    console.log(floorToDelete)
-    if(floorToDelete){
-        state.positions.splice(floorToDelete,1);
-        state.exit.splice(floorToDelete,1);
-        state.enemies.splice(floorToDelete,1);
-        state.playerStartingPositions.splice(floorToDelete,1);
-        this.setState(state);
-        document.getElementById("chooseFloorToDelete").style.display="none";
-    }
-    else if(mode){
-        document.getElementById("chooseFloorToDelete").style.display="block";
-    }
-    else{
-        state.positions.push([0,0,10,10]);
-        state.exit.push([0,0]);
-        state.enemies.push([2,2,10,10,300]);
-        state.playerStartingPositions.push([1,1]);
-        this.setState(state);
     }
 }
 /*
@@ -385,7 +368,27 @@ componentWillUpdate(nextProps,nextState){
 render(){  
 return (
 <div>
-    <div id="changeBossPosition">
+    <div id="typeName">
+        Name: <input id="levelName"/>
+        <button onClick={()=>{document.getElementById("typeName").style.display="none"; document.getElementById("levelName").value=""}}>Cancel</button>
+        <button onClick={()=>{var level = JSON.parse(JSON.stringify(this.state));
+                for(let i in level.initial)level[i] = level.initial[i];
+                level.name=document.getElementById("levelName").value;
+                this.setState({name: document.getElementById("levelName").value});
+                storage.push(level);
+                localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify(storage));
+                document.getElementById("levelName").value="";
+                document.getElementById("typeName").style.display="none";
+                }}>Save</button>
+    </div>
+    <div id="win">
+        <div>
+        <h1>You WON!</h1>
+        <span>Congratulations! now click the button below to reset the level</span><br/>
+        <button onClick={()=>{document.getElementById("win").style.display="none"}}>Reset</button>
+        </div>
+    </div>
+    <div id="changeBossStats">
         X: <input type="number" id="bossX" />
         Y: <input type="number" id="bossY" />
         life: <input type="number" id="bossLife" />
@@ -395,10 +398,10 @@ return (
             document.getElementById("bossY").value="";
             document.getElementById("bossLife").value="";
             document.getElementById("bossDamage").value="";
-            document.getElementById("changeBossPosition").style.display="none";
+            document.getElementById("changeBossStats").style.display="none";
             }}>Cancel</button>
         <button onClick={()=>{
-            document.getElementById("changeBossPosition").style.display="none";
+            document.getElementById("changeBossStats").style.display="none";
             var boss= [document.getElementById("bossX").value,document.getElementById("bossY").value,document.getElementById("bossLife").value,document.getElementById("bossDamage").value];
             if(boss[0]=="")boss[0]=this.state.boss[0];
             if(boss[1]=="")boss[1]=this.state.boss[1];
@@ -416,9 +419,9 @@ return (
     </div>
     <div id="chooseLevel">
         {
-            JSON.parse(localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames')).map((info,index)=>(
-                <div key={'Level'+index} onClick={()=>{document.getElementById("chooseLevel").style.display="none";game.setState(JSON.parse(localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames'))[index])}}>
-                    <p>{info['name']}</p>
+            storage.map((info,index)=>(
+                <div key={'Level'+index} onClick={()=>{document.getElementById("chooseLevel").style.display="none";game.setState(JSON.parse(JSON.stringify(storage))[index])}}>
+                    <p>{info.name}</p>
                     <br />
                 </div>
             ))
@@ -426,7 +429,23 @@ return (
     </div>
 <div id="chooseFloorToDelete">
     {
-    this.state.playerStartingPositions.map((info,index)=><button onClick={()=>{this.modifyfloor(false,index)}} key={"floorButtonToDelete "+(index+1)}>{index+1}</button>)
+    this.state.playerStartingPositions.map((info,index)=><button onClick={()=>{
+        var state=JSON.parse(JSON.stringify(this.state));
+        state.positions.splice(index,1);
+        state.exit.splice(index,1);
+        state.enemies.splice(index,1);
+        state.playerStartingPositions.splice(index,1);
+        state.initial.enemies.splice(index,1);
+        if(state.floor == index){
+            state.floor= index-1;
+            if(state.floor<0) state=0;
+        }
+        else if(state.floor>state.positions.length-1){
+            state.floor=state.positions.length-1;
+        }
+        this.setState(state);
+        document.getElementById("chooseFloorToDelete").style.display="none";
+        }} key={"floorButtonToDelete "+(index+1)}>{index+1}</button>)
     }
     <button onClick={()=>{document.getElementById("chooseFloorToDelete").style.display="none"}}>Cancel</button>
 </div>
@@ -439,9 +458,9 @@ return (
 
 
 <button onClick={()=>{
-    this.setState({
+    var newGame = {
         index: storage.length,
-        name: "",
+        name: "unnamed",
         life:400,weapon:'', damage:1000, level:0,
         xpRequired:[50,100,210,340,500,760,1000,1200,1600,2000],
         xp: 0, 
@@ -457,18 +476,28 @@ return (
                 xp: 0,
                 level: 0,
                 damage: 20,
-                life: 400 },
+                life: 400, 
+                boss:[5,5,10,13],floor:0},
                 show:[false],playerStartingPositions:[[0,0]]
+    };
+    this.setState(JSON.parse(JSON.stringify(newGame)));
 
-
-
-    })
     }}>Make a custom Level</button>
 
 
 {
     this.state.edit?<button onClick={()=>{this.setState({edit: !this.state.edit})}}>Turn off Edit Mode</button>:<button onClick={()=>{this.setState({edit: !this.state.edit})}}>Turn on Edit Mode</button>
 }
+<button onClick={()=>{
+    var f = JSON.parse(JSON.stringify(this.state));
+    var date = new Date();
+    f.name = f.name+ " Session: " + date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + "  " + date.getHours()+":"+date.getMinutes();
+    f.index = storage.length;
+            storage.push(f);
+
+            localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify(storage));
+            
+            }}>Save Session</button>
 {
     this.state.edit? (
     <div>
@@ -479,29 +508,39 @@ return (
             document.getElementById('addArea').style.display="block";
             }}>Add Area</button>
         <button onClick={()=>{
-            this.modifyfloor();
             if(able){alert("Remenber to change the Boss position because it's always on the last floor"); 
-            able=false;
-            }}}>Add Floor</button>
+            able=false;}
+            let state=JSON.parse(JSON.stringify(this.state));
+        state.positions.push([[0,0,10,10]]);
+        state.exit.push([0,0]);
+        state.enemies.push([[2,2,10,10,300]]);
+        state.playerStartingPositions.push([1,1]);
+        state.initial.enemies.push([[2,2,10,10,300]]);
+        this.setState(state);
+            }}>Add Floor</button>
         {
                 this.state.playerStartingPositions.map((info,index)=><button onClick={()=>{game.setState({floor: index,playerX:game.state.playerStartingPositions[index][0],playerY:game.state.playerStartingPositions[index][1]});}} key={"floorButton "+(index+1)}>{index+1}</button>)
         }
-        <button onClick={()=>{this.modifyfloor(true)}}>Delete Floor</button>
+        <button onClick={()=>{if(able){alert("Remenber to change the Boss position because it's always on the last floor"); 
+            able=false;} if(this.state.positions.length>1)document.getElementById("chooseFloorToDelete").style.display="block";}}>Delete Floor</button>
         {
-            (this.state.name)?<button>Save Changes</button>:<button>Save Current Custom Level As</button>
+            (this.state.name != "unnamed")?(<button onClick={()=>{
+                var level = JSON.parse(JSON.stringify(this.state));
+                for(let i in level.initial)level[i] = level.initial[i];
+                storage[level.index]=level;
+                localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify(storage));
+                }}>Save Changes</button>)
+                :
+                (<button onClick={()=>{document.getElementById('typeName').style.display="block";}}>Save Current Custom Level As</button>)
         }
         <button>Make a Copy of this level</button>
-        <button onClick={()=>{
-            storage[this.state.index] = JSON.parse(JSON.stringify(this.state));
-            localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify(storage));
-            }}>Save Session</button>
         <button>Reset</button>
         <button>Share this Level</button>
         <button>Delete Enemies</button>
         <button>Add Enemies</button>
         <button>Change Starting Position</button>
         {
-        (this.state.floor==this.state.exit.length)?(<button onClick={()=>{document.getElementById("changeBossPosition").style.display="block";}}>Change Boss Stats</button>):(<button>Change Exit Position</button>)
+        (this.state.floor==this.state.exit.length)?(<button onClick={()=>{document.getElementById("changeBossStats").style.display="block";}}>Change Boss Stats</button>):(<button>Change Exit Position</button>)
         }
     
 
@@ -561,13 +600,13 @@ return (
     this.state.enemies[this.state.floor].map((info,index)=>(<Enemys x={info[0]} y={info[1]} key={'enemy'+index}/>))   
 }
 {
-(this.state.floor==this.state.exit.length)?(
+this.state.floor == this.state.positions.length-1 ?(
     <div style={{
         width: "2rem",
         height: "2rem",
         backgroundColor: "red",
         position: "absolute",
-        zIndex: 15000,
+        zIndex: 5000,
         left: (this.state.x + this.state.boss[0]) + "rem",
         top: (this.state.y + this.state.boss[1]) + "rem"
         }}></div>

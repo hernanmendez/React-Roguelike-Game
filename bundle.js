@@ -9531,29 +9531,32 @@ var React = __webpack_require__(81);
 var ReactDOM = __webpack_require__(80);
 
 localStorage.clear();
-
-localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify([{
-    index: 0,
-    name: 'Default', life: 400, weapon: '', damage: 20, level: 0,
-    xpRequired: [50, 100, 210, 340, 500, 760, 1000, 1200, 1600, 2000],
-    xp: 0,
-    x: 0, y: 0, dead: false,
-    positions: [[[2, 2, 10, 10], [12, 3, 1, 1], [13, 2, 5, 5], [18, 5, 1, 1], [19, 2, 4, 10], [15, 7, 1, 10], [8, 17, 20, 5], [10, 22, 1, 1], [25, 22, 1, 1], [23, 3, 5, 1], [23, 9, 1, 1], [24, 7, 7, 9], [7, 23, 7, 6], [22, 23, 8, 3], [28, 3, 7, 10], [34, 1, 4, 5], [25, 16, 1, 1], [28, 18, 5, 1], [32, 13, 1, 6], [32, 19, 5, 5]], [[10, 20, 5, 5], [12, 19, 1, 1], [12, 16, 15, 3], [22, 12, 7, 7], [25, 11, 1, 1], [25, 10, 6, 1], [10, 13, 2, 1], [7, 12, 1, 3]], [], []],
-    //enemy is done like [Xposition,Yposition,life,damage,xp]
-    enemies: [[[4, 4, 80, 400, 50], [5, 5, 100, 30, 40], [20, 5, 100, 25, 20]], [], [], []],
-    exit: [[34, 22], [22, 22], []],
-    //boss is done like [Xposition,Yposition,life,damage,xp]
-    boss: [0, 0, 1000, 15], edit: false, playerX: 3, playerY: 3, floor: 0,
-    initial: {
-        enemies: [[[4, 4, 80, 400, 50], [5, 5, 100, 30, 40], [20, 5, 100, 25, 20]], [], [], []],
-        playerX: 3,
-        playerY: 3,
+if (!localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames')) {
+    localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify([{
+        index: 0,
+        name: 'Default', life: 400, weapon: '', damage: 20, level: 0,
+        xpRequired: [50, 100, 210, 340, 500, 760, 1000, 1200, 1600, 2000],
         xp: 0,
-        level: 0,
-        damage: 20,
-        life: 400 },
-    show: [false], playerStartingPositions: [[3, 3], [12, 22], [12, 22], [12, 22]]
-}]));
+        x: 0, y: 0, dead: false,
+        positions: [[[2, 2, 10, 10], [12, 3, 1, 1], [13, 2, 5, 5], [18, 5, 1, 1], [19, 2, 4, 10], [15, 7, 1, 10], [8, 17, 20, 5], [10, 22, 1, 1], [25, 22, 1, 1], [23, 3, 5, 1], [23, 9, 1, 1], [24, 7, 7, 9], [7, 23, 7, 6], [22, 23, 8, 3], [28, 3, 7, 10], [34, 1, 4, 5], [25, 16, 1, 1], [28, 18, 5, 1], [32, 13, 1, 6], [32, 19, 5, 5]], [[10, 20, 5, 5], [12, 19, 1, 1], [12, 16, 15, 3], [22, 12, 7, 7], [25, 11, 1, 1], [25, 10, 6, 1], [10, 13, 2, 1], [7, 12, 1, 3]], [], []],
+        //enemy is done like [Xposition,Yposition,life,damage,xp]
+        enemies: [[[4, 4, 80, 400, 50], [5, 5, 100, 30, 40], [20, 5, 100, 25, 20]], [], [], []],
+        exit: [[34, 22], [22, 22], []],
+        //boss is done like [Xposition,Yposition,life,damage,xp]
+        boss: [0, 0, 1000, 15], edit: false, playerX: 3, playerY: 3, floor: 0,
+        initial: {
+            enemies: [[[4, 4, 80, 400, 50], [5, 5, 100, 30, 40], [20, 5, 100, 25, 20]], [], [], []],
+            playerX: 3,
+            playerY: 3,
+            xp: 0,
+            level: 0,
+            damage: 20,
+            life: 400,
+            boss: [0, 0, 1000, 15],
+            floor: 0 },
+        show: [false], playerStartingPositions: [[3, 3], [12, 22], [12, 22], [12, 22]]
+    }]));
+}
 var storage = JSON.parse(localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames'));
 /*
 ##############################################################################################################################
@@ -9767,7 +9770,8 @@ class Game extends React.Component {
                     let life = game.state.life - boss[3];
                     game.setState({ life: life, boss: boss, dead: life <= 0 });
                     if (boss[2] <= 0) {
-                        this.setState(JSON.parse(JSON.stringify(this.state.initial)));
+                        document.getElementById("win").style.display = "block";
+                        game.setState(JSON.parse(JSON.stringify(game.state.initial)));
                     }
                 } else if (nextUp == JSON.stringify(game.state.exit[game.state.floor])) game.setState({ floor: game.state.floor + 1, playerX: game.state.playerStartingPositions[game.state.floor + 1][0], playerY: game.state.playerStartingPositions[game.state.floor + 1][1] });else if (ava.indexOf(nextUp) > -1) game.setState({ playerY: game.state.playerY - 1 });
                 break;
@@ -9793,7 +9797,8 @@ class Game extends React.Component {
 
                     game.setState({ life: life, boss: boss, dead: life <= 0 });
                     if (boss[2] <= 0) {
-                        this.setState(JSON.parse(JSON.stringify(this.state.initial)));
+                        document.getElementById("win").style.display = "block";
+                        game.setState(JSON.parse(JSON.stringify(game.state.initial)));
                     }
                 } else if (nextRight == JSON.stringify(game.state.exit[game.state.floor])) game.setState({ floor: game.state.floor + 1, playerX: game.state.playerStartingPositions[game.state.floor + 1][0], playerY: game.state.playerStartingPositions[game.state.floor + 1][1] });else if (ava.indexOf(nextRight) > -1) game.setState({ playerX: game.state.playerX + 1 });
                 break;
@@ -9819,7 +9824,8 @@ class Game extends React.Component {
 
                     game.setState({ life: life, boss: boss, dead: life <= 0 });
                     if (boss[2] <= 0) {
-                        this.setState(JSON.parse(JSON.stringify(this.state.initial)));
+                        document.getElementById("win").style.display = "block";
+                        game.setState(JSON.parse(JSON.stringify(game.state.initial)));
                     }
                 } else if (nextDown == JSON.stringify(game.state.exit[game.state.floor])) game.setState({ floor: game.state.floor + 1, playerX: game.state.playerStartingPositions[game.state.floor + 1][0], playerY: game.state.playerStartingPositions[game.state.floor + 1][1] });else if (ava.indexOf(nextDown) > -1) game.setState({ playerY: game.state.playerY + 1 });
                 break;
@@ -9844,7 +9850,8 @@ class Game extends React.Component {
                     let life = game.state.life - boss[3];
                     game.setState({ life: life, boss: boss, dead: life <= 0 });
                     if (boss[2] <= 0) {
-                        this.setState(JSON.parse(JSON.stringify(this.state.initial)));
+                        document.getElementById("win").style.display = "block";
+                        game.setState(JSON.parse(JSON.stringify(game.state.initial)));
                     }
                 } else if (nextLeft == JSON.stringify(game.state.exit[game.state.floor])) game.setState({ floor: game.state.floor + 1, playerX: game.state.playerStartingPositions[game.state.floor + 1][0], playerY: game.state.playerStartingPositions[game.state.floor + 1][1] });else if (ava.indexOf(nextLeft) > -1) game.setState({ playerX: game.state.playerX - 1 });
                 break;
@@ -9862,31 +9869,6 @@ class Game extends React.Component {
             game.setState({ show: [false] });
         } else {
             game.setState({ show: [true, x, y] });
-        }
-    }
-    /*
-    ##############################################################################################################################
-    ##############################################################################################################################
-    ##############################################################################################################################
-    */
-    modifyfloor(mode, floorToDelete) {
-        var state = JSON.parse(JSON.stringify(this.state));
-        console.log(floorToDelete);
-        if (floorToDelete) {
-            state.positions.splice(floorToDelete, 1);
-            state.exit.splice(floorToDelete, 1);
-            state.enemies.splice(floorToDelete, 1);
-            state.playerStartingPositions.splice(floorToDelete, 1);
-            this.setState(state);
-            document.getElementById("chooseFloorToDelete").style.display = "none";
-        } else if (mode) {
-            document.getElementById("chooseFloorToDelete").style.display = "block";
-        } else {
-            state.positions.push([0, 0, 10, 10]);
-            state.exit.push([0, 0]);
-            state.enemies.push([2, 2, 10, 10, 300]);
-            state.playerStartingPositions.push([1, 1]);
-            this.setState(state);
         }
     }
     /*
@@ -9924,7 +9906,60 @@ class Game extends React.Component {
             null,
             React.createElement(
                 "div",
-                { id: "changeBossPosition" },
+                { id: "typeName" },
+                "Name: ",
+                React.createElement("input", { id: "levelName" }),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            document.getElementById("typeName").style.display = "none";document.getElementById("levelName").value = "";
+                        } },
+                    "Cancel"
+                ),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            var level = JSON.parse(JSON.stringify(this.state));
+                            for (let i in level.initial) level[i] = level.initial[i];
+                            level.name = document.getElementById("levelName").value;
+                            this.setState({ name: document.getElementById("levelName").value });
+                            storage.push(level);
+                            localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
+                            document.getElementById("levelName").value = "";
+                            document.getElementById("typeName").style.display = "none";
+                        } },
+                    "Save"
+                )
+            ),
+            React.createElement(
+                "div",
+                { id: "win" },
+                React.createElement(
+                    "div",
+                    null,
+                    React.createElement(
+                        "h1",
+                        null,
+                        "You WON!"
+                    ),
+                    React.createElement(
+                        "span",
+                        null,
+                        "Congratulations! now click the button below to reset the level"
+                    ),
+                    React.createElement("br", null),
+                    React.createElement(
+                        "button",
+                        { onClick: () => {
+                                document.getElementById("win").style.display = "none";
+                            } },
+                        "Reset"
+                    )
+                )
+            ),
+            React.createElement(
+                "div",
+                { id: "changeBossStats" },
                 "X: ",
                 React.createElement("input", { type: "number", id: "bossX" }),
                 "Y: ",
@@ -9940,14 +9975,14 @@ class Game extends React.Component {
                             document.getElementById("bossY").value = "";
                             document.getElementById("bossLife").value = "";
                             document.getElementById("bossDamage").value = "";
-                            document.getElementById("changeBossPosition").style.display = "none";
+                            document.getElementById("changeBossStats").style.display = "none";
                         } },
                     "Cancel"
                 ),
                 React.createElement(
                     "button",
                     { onClick: () => {
-                            document.getElementById("changeBossPosition").style.display = "none";
+                            document.getElementById("changeBossStats").style.display = "none";
                             var boss = [document.getElementById("bossX").value, document.getElementById("bossY").value, document.getElementById("bossLife").value, document.getElementById("bossDamage").value];
                             if (boss[0] == "") boss[0] = this.state.boss[0];
                             if (boss[1] == "") boss[1] = this.state.boss[1];
@@ -9970,15 +10005,15 @@ class Game extends React.Component {
             React.createElement(
                 "div",
                 { id: "chooseLevel" },
-                JSON.parse(localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames')).map((info, index) => React.createElement(
+                storage.map((info, index) => React.createElement(
                     "div",
                     { key: 'Level' + index, onClick: () => {
-                            document.getElementById("chooseLevel").style.display = "none";game.setState(JSON.parse(localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames'))[index]);
+                            document.getElementById("chooseLevel").style.display = "none";game.setState(JSON.parse(JSON.stringify(storage))[index]);
                         } },
                     React.createElement(
                         "p",
                         null,
-                        info['name']
+                        info.name
                     ),
                     React.createElement("br", null)
                 ))
@@ -9989,7 +10024,20 @@ class Game extends React.Component {
                 this.state.playerStartingPositions.map((info, index) => React.createElement(
                     "button",
                     { onClick: () => {
-                            this.modifyfloor(false, index);
+                            var state = JSON.parse(JSON.stringify(this.state));
+                            state.positions.splice(index, 1);
+                            state.exit.splice(index, 1);
+                            state.enemies.splice(index, 1);
+                            state.playerStartingPositions.splice(index, 1);
+                            state.initial.enemies.splice(index, 1);
+                            if (state.floor == index) {
+                                state.floor = index - 1;
+                                if (state.floor < 0) state = 0;
+                            } else if (state.floor > state.positions.length - 1) {
+                                state.floor = state.positions.length - 1;
+                            }
+                            this.setState(state);
+                            document.getElementById("chooseFloorToDelete").style.display = "none";
                         }, key: "floorButtonToDelete " + (index + 1) },
                     index + 1
                 )),
@@ -10049,9 +10097,9 @@ class Game extends React.Component {
                 React.createElement(
                     "button",
                     { onClick: () => {
-                            this.setState({
+                            var newGame = {
                                 index: storage.length,
-                                name: "",
+                                name: "unnamed",
                                 life: 400, weapon: '', damage: 1000, level: 0,
                                 xpRequired: [50, 100, 210, 340, 500, 760, 1000, 1200, 1600, 2000],
                                 xp: 0,
@@ -10067,10 +10115,11 @@ class Game extends React.Component {
                                     xp: 0,
                                     level: 0,
                                     damage: 20,
-                                    life: 400 },
+                                    life: 400,
+                                    boss: [5, 5, 10, 13], floor: 0 },
                                 show: [false], playerStartingPositions: [[0, 0]]
-
-                            });
+                            };
+                            this.setState(JSON.parse(JSON.stringify(newGame)));
                         } },
                     "Make a custom Level"
                 ),
@@ -10087,6 +10136,19 @@ class Game extends React.Component {
                         } },
                     "Turn on Edit Mode"
                 ),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            var f = JSON.parse(JSON.stringify(this.state));
+                            var date = new Date();
+                            f.name = f.name + " Session: " + date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + "  " + date.getHours() + ":" + date.getMinutes();
+                            f.index = storage.length;
+                            storage.push(f);
+
+                            localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
+                        } },
+                    "Save Session"
+                ),
                 this.state.edit ? React.createElement(
                     "div",
                     null,
@@ -10101,11 +10163,17 @@ class Game extends React.Component {
                     React.createElement(
                         "button",
                         { onClick: () => {
-                                this.modifyfloor();
                                 if (able) {
                                     alert("Remenber to change the Boss position because it's always on the last floor");
                                     able = false;
                                 }
+                                let state = JSON.parse(JSON.stringify(this.state));
+                                state.positions.push([[0, 0, 10, 10]]);
+                                state.exit.push([0, 0]);
+                                state.enemies.push([[2, 2, 10, 10, 300]]);
+                                state.playerStartingPositions.push([1, 1]);
+                                state.initial.enemies.push([[2, 2, 10, 10, 300]]);
+                                this.setState(state);
                             } },
                         "Add Floor"
                     ),
@@ -10119,31 +10187,33 @@ class Game extends React.Component {
                     React.createElement(
                         "button",
                         { onClick: () => {
-                                this.modifyfloor(true);
+                                if (able) {
+                                    alert("Remenber to change the Boss position because it's always on the last floor");
+                                    able = false;
+                                }if (this.state.positions.length > 1) document.getElementById("chooseFloorToDelete").style.display = "block";
                             } },
                         "Delete Floor"
                     ),
-                    this.state.name ? React.createElement(
+                    this.state.name != "unnamed" ? React.createElement(
                         "button",
-                        null,
+                        { onClick: () => {
+                                var level = JSON.parse(JSON.stringify(this.state));
+                                for (let i in level.initial) level[i] = level.initial[i];
+                                storage[level.index] = level;
+                                localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
+                            } },
                         "Save Changes"
                     ) : React.createElement(
                         "button",
-                        null,
+                        { onClick: () => {
+                                document.getElementById('typeName').style.display = "block";
+                            } },
                         "Save Current Custom Level As"
                     ),
                     React.createElement(
                         "button",
                         null,
                         "Make a Copy of this level"
-                    ),
-                    React.createElement(
-                        "button",
-                        { onClick: () => {
-                                storage[this.state.index] = JSON.parse(JSON.stringify(this.state));
-                                localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
-                            } },
-                        "Save Session"
                     ),
                     React.createElement(
                         "button",
@@ -10173,7 +10243,7 @@ class Game extends React.Component {
                     this.state.floor == this.state.exit.length ? React.createElement(
                         "button",
                         { onClick: () => {
-                                document.getElementById("changeBossPosition").style.display = "block";
+                                document.getElementById("changeBossStats").style.display = "block";
                             } },
                         "Change Boss Stats"
                     ) : React.createElement(
@@ -10239,12 +10309,12 @@ class Game extends React.Component {
                     { className: "game" },
                     this.state.positions[this.state.floor].map((info, index) => React.createElement(Area, { x: info[0], y: info[1], width: info[2], height: info[3], edit: this.state.edit, index: index, key: index })),
                     this.state.enemies[this.state.floor].map((info, index) => React.createElement(Enemys, { x: info[0], y: info[1], key: 'enemy' + index })),
-                    this.state.floor == this.state.exit.length ? React.createElement("div", { style: {
+                    this.state.floor == this.state.positions.length - 1 ? React.createElement("div", { style: {
                             width: "2rem",
                             height: "2rem",
                             backgroundColor: "red",
                             position: "absolute",
-                            zIndex: 15000,
+                            zIndex: 5000,
                             left: this.state.x + this.state.boss[0] + "rem",
                             top: this.state.y + this.state.boss[1] + "rem"
                         } }) : React.createElement(Exit, { x: this.state.exit[this.state.floor][0], y: this.state.exit[this.state.floor][1] })
