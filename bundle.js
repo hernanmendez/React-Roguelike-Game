@@ -9890,11 +9890,17 @@ class Game extends React.Component {
                 React.createElement("input", { type: "number", id: "bossX" }),
                 "Y: ",
                 React.createElement("input", { type: "number", id: "bossY" }),
+                "life: ",
+                React.createElement("input", { type: "number", id: "bossLife" }),
+                "damage: ",
+                React.createElement("input", { type: "number", id: "bossDamage" }),
                 React.createElement(
                     "button",
                     { onClick: () => {
                             document.getElementById("bossX").value = "";
                             document.getElementById("bossY").value = "";
+                            document.getElementById("bossLife").value = "";
+                            document.getElementById("bossDamage").value = "";
                             document.getElementById("changeBossPosition").style.display = "none";
                         } },
                     "Cancel"
@@ -9903,11 +9909,23 @@ class Game extends React.Component {
                     "button",
                     { onClick: () => {
                             document.getElementById("changeBossPosition").style.display = "none";
-                            this.setState({ boss: [JSON.parse(document.getElementById("bossX").value), JSON.parse(document.getElementById("bossY").value), this.state.boss[2], this.state.boss[3]] });
+                            var boss = [document.getElementById("bossX").value, document.getElementById("bossY").value, document.getElementById("bossLife").value, document.getElementById("bossDamage").value];
+                            if (boss[0] == "") boss[0] = this.state.boss[0];
+                            if (boss[1] == "") boss[1] = this.state.boss[1];
+                            if (boss[2] == "") boss[2] = this.state.boss[2];else boss[2] = JSON.parse(boss[2]);
+                            if (boss[3] == "") boss[3] = this.state.boss[3];else boss[3] = JSON.parse(boss[3]);
+                            this.setState({ boss: boss });
                             document.getElementById("bossX").value = "";
                             document.getElementById("bossY").value = "";
+                            document.getElementById("bossLife").value = "";
+                            document.getElementById("bossDamage").value = "";
                         } },
-                    "Change Position"
+                    "Change Stats"
+                ),
+                React.createElement(
+                    "p",
+                    null,
+                    "If you leave a space on blank it will set the previous value as default"
                 )
             ),
             React.createElement(
@@ -10070,7 +10088,7 @@ class Game extends React.Component {
                                 this.setState({ floor: lastfloor, playerX: this.state.playerStartingPositions[lastfloor][0], playerY: this.state.playerStartingPositions[lastfloor][1] });
                                 document.getElementById("changeBossPosition").style.display = "block";
                             } },
-                        "Change Boss Position"
+                        "Change Boss Stats"
                     ),
                     React.createElement(
                         "div",

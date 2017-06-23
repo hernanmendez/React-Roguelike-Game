@@ -353,17 +353,31 @@ return (
     <div id="changeBossPosition">
         X: <input type="number" id="bossX" />
         Y: <input type="number" id="bossY" />
+        life: <input type="number" id="bossLife" />
+        damage: <input type="number" id="bossDamage" />
         <button onClick={()=>{
             document.getElementById("bossX").value="";
             document.getElementById("bossY").value="";
+            document.getElementById("bossLife").value="";
+            document.getElementById("bossDamage").value="";
             document.getElementById("changeBossPosition").style.display="none";
             }}>Cancel</button>
         <button onClick={()=>{
             document.getElementById("changeBossPosition").style.display="none";
-            this.setState({boss:[JSON.parse(document.getElementById("bossX").value),JSON.parse(document.getElementById("bossY").value),this.state.boss[2],this.state.boss[3]]});
+            var boss= [document.getElementById("bossX").value,document.getElementById("bossY").value,document.getElementById("bossLife").value,document.getElementById("bossDamage").value];
+            if(boss[0]=="")boss[0]=this.state.boss[0];
+            if(boss[1]=="")boss[1]=this.state.boss[1];
+            if(boss[2]=="")boss[2]=this.state.boss[2];
+            else boss[2]=JSON.parse(boss[2]);
+            if(boss[3]=="")boss[3]=this.state.boss[3];
+            else boss[3]=JSON.parse(boss[3]);
+            this.setState({boss:boss});
             document.getElementById("bossX").value="";
             document.getElementById("bossY").value="";
-            }}>Change Position</button>
+            document.getElementById("bossLife").value="";
+            document.getElementById("bossDamage").value="";
+            }}>Change Stats</button>
+            <p>If you leave a space on blank it will set the previous value as default</p>
     </div>
     <div id="chooseLevel">
         {
@@ -422,7 +436,7 @@ return (
             var lastfloor = game.state.exit.length-1;
             this.setState({floor: lastfloor,playerX:this.state.playerStartingPositions[lastfloor][0],playerY:this.state.playerStartingPositions[lastfloor][1]});
             document.getElementById("changeBossPosition").style.display="block";
-            }}>Change Boss Position</button>
+            }}>Change Boss Stats</button>
 
     
 
