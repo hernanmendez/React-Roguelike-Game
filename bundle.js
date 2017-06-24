@@ -9529,23 +9529,28 @@ module.exports = __webpack_require__(19);
 
 var React = __webpack_require__(81);
 var ReactDOM = __webpack_require__(80);
-
 localStorage.clear();
 if (!localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames')) {
     localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify([{
         index: 0,
-        name: 'Default', life: 400, weapon: '', damage: 20, level: 0,
+        name: 'Default', life: 400, weapon: 'stick', damage: 20, level: 0,
         xpRequired: [50, 100, 210, 340, 500, 760, 1000, 1200, 1600, 2000],
         xp: 0,
         x: 0, y: 0, dead: false,
-        positions: [[[2, 2, 10, 10], [12, 3, 1, 1], [13, 2, 5, 5], [18, 5, 1, 1], [19, 2, 4, 10], [15, 7, 1, 10], [8, 17, 20, 5], [10, 22, 1, 1], [25, 22, 1, 1], [23, 3, 5, 1], [23, 9, 1, 1], [24, 7, 7, 9], [7, 23, 7, 6], [22, 23, 8, 3], [28, 3, 7, 10], [34, 1, 4, 5], [25, 16, 1, 1], [28, 18, 5, 1], [32, 13, 1, 6], [32, 19, 5, 5]], [[10, 20, 5, 5], [12, 19, 1, 1], [12, 16, 15, 3], [22, 12, 7, 7], [25, 11, 1, 1], [25, 10, 6, 1], [10, 13, 2, 1], [7, 12, 1, 3]], [], []],
+        positions: [[[2, 2, 10, 10], [12, 3, 1, 1], [13, 2, 5, 5], [18, 5, 1, 1], [19, 2, 4, 10], [15, 7, 1, 10], [8, 17, 20, 5], [10, 22, 1, 1], [25, 22, 1, 1], [23, 3, 5, 1], [23, 9, 1, 1], [24, 7, 7, 9], [7, 23, 7, 6], [22, 23, 8, 3], [28, 3, 7, 10], [34, 1, 4, 5], [25, 16, 1, 1], [28, 18, 5, 1], [32, 13, 1, 6], [32, 19, 5, 5]], [[10, 20, 5, 5], [12, 19, 1, 1], [12, 16, 15, 3], [22, 12, 7, 7], [25, 11, 1, 1], [25, 10, 6, 1]], [], []],
         //enemy is done like [Xposition,Yposition,life,damage,xp]
-        enemies: [[[4, 4, 80, 400, 50], [5, 5, 100, 30, 40], [20, 5, 100, 25, 20]], [], [], []],
+        enemies: [[[28, 18, 100, 50, 100], [23, 9, 100, 30, 40], [20, 5, 100, 25, 20]], [], [], []],
         exit: [[34, 22], [22, 22], []],
+        //posX,posY,name,aditional damage
+        weapons: [[[12, 19, "Damaged Dagger", 5], [8, 27, "katana", 20]], [], [], []],
+        //posX,posY,aditional life
+        LifeObjs: [[[10, 8, 100], [34, 22, 400]], [], [], []],
         //boss is done like [Xposition,Yposition,life,damage,xp]
         boss: [0, 0, 1000, 15], edit: false, playerX: 3, playerY: 3, floor: 0,
         initial: {
-            enemies: [[[4, 4, 80, 400, 50], [5, 5, 100, 30, 40], [20, 5, 100, 25, 20]], [], [], []],
+            enemies: [[[28, 18, 100, 50, 100], [23, 9, 100, 30, 40], [20, 5, 100, 25, 20]], [], [], []],
+            weapons: [[[12, 19, "Damaged Dagger", 5], [8, 27, "katana", 20]], [], [], []],
+            LifeObjs: [[[10, 8, 100], [34, 22, 400]], [], [], []],
             playerX: 3,
             playerY: 3,
             xp: 0,
@@ -9596,7 +9601,17 @@ const Enemys = function (props) {
         top: game.state.y + props.y + 'rem',
         zIndex: 6000
     };
-    return React.createElement("div", { style: style });
+    return React.createElement(
+        "div",
+        { style: style, onClick: props.edit ? () => {
+                var arr = JSON.parse(JSON.stringify(game.state.enemies));
+                arr[game.state.floor].splice(props.index, 1);
+                var initial = JSON.parse(JSON.stringify(game.state.initial));
+                initial.enemies[game.state.floor].splice(props.index, 1);
+                game.setState({ enemies: arr, initial: initial });
+            } : () => {} },
+        props.edit ? "X" : ''
+    );
 };
 /*
 ##############################################################################################################################
@@ -9615,10 +9630,14 @@ const LifeObj = function (props) {
     };
     return React.createElement(
         "div",
-        { style: style },
-        props.x,
-        ",",
-        props.y
+        { style: style, onClick: props.edit ? () => {
+                var arr = JSON.parse(JSON.stringify(game.state.LifeObjs));
+                arr[game.state.floor].splice(props.index, 1);
+                var initial = JSON.parse(JSON.stringify(game.state.initial));
+                initial.LifeObjs[game.state.floor].splice(props.index, 1);
+                game.setState({ LifeObjs: arr, initial: initial });
+            } : () => {} },
+        props.edit ? "X" : ''
     );
 };
 /*
@@ -9631,17 +9650,21 @@ const Weapon = function (props) {
         width: '1rem',
         height: '1rem',
         position: 'absolute',
-        backgroundColor: 'yellow',
+        backgroundColor: "#ee5",
         left: game.state.x + props.x + 'rem',
         top: game.state.y + props.y + 'rem',
         zIndex: 3000
     };
     return React.createElement(
         "div",
-        { style: style },
-        props.x,
-        ",",
-        props.y
+        { style: style, onClick: props.edit ? () => {
+                var arr = JSON.parse(JSON.stringify(game.state.weapons));
+                arr[game.state.floor].splice(props.index, 1);
+                var initial = JSON.parse(JSON.stringify(game.state.initial));
+                initial.weapons[game.state.floor].splice(props.index, 1);
+                game.setState({ weapons: arr, initial: initial });
+            } : () => {} },
+        props.edit ? "X" : ''
     );
 };
 /*
@@ -9773,6 +9796,18 @@ class Game extends React.Component {
                         document.getElementById("win").style.display = "block";
                         game.setState(JSON.parse(JSON.stringify(game.state.initial)));
                     }
+                } else if (game.state.weapons[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextUp) > -1) {
+                    let index = game.state.weapons[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextUp);
+                    let weapons = JSON.parse(JSON.stringify(game.state.weapons));
+                    let weapon = weapons[game.state.floor][index];
+                    weapons[game.state.floor].splice(index, 1);
+                    game.setState({ weapons: weapons, damage: game.state.damage + weapon[3], weapon: weapon[2] });
+                } else if (game.state.LifeObjs[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextUp) > -1) {
+                    let index = game.state.LifeObjs[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextUp);
+                    let objs = JSON.parse(JSON.stringify(game.state.LifeObjs));
+                    let extralife = objs[game.state.floor][index][2];
+                    objs[game.state.floor].splice(index, 1);
+                    game.setState({ LifeObjs: objs, life: game.state.life + extralife });
                 } else if (nextUp == JSON.stringify(game.state.exit[game.state.floor])) game.setState({ floor: game.state.floor + 1, playerX: game.state.playerStartingPositions[game.state.floor + 1][0], playerY: game.state.playerStartingPositions[game.state.floor + 1][1] });else if (ava.indexOf(nextUp) > -1) game.setState({ playerY: game.state.playerY - 1 });
                 break;
             //end of the case 'ArrowUp'
@@ -9800,6 +9835,18 @@ class Game extends React.Component {
                         document.getElementById("win").style.display = "block";
                         game.setState(JSON.parse(JSON.stringify(game.state.initial)));
                     }
+                } else if (game.state.weapons[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextRight) > -1) {
+                    let index = game.state.weapons[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextRight);
+                    let weapons = JSON.parse(JSON.stringify(game.state.weapons));
+                    let weapon = weapons[game.state.floor][index];
+                    weapons[game.state.floor].splice(index, 1);
+                    game.setState({ weapons: weapons, damage: game.state.damage + weapon[3], weapon: weapon[2] });
+                } else if (game.state.LifeObjs[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextRight) > -1) {
+                    let index = game.state.LifeObjs[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextRight);
+                    let objs = JSON.parse(JSON.stringify(game.state.LifeObjs));
+                    let extralife = objs[game.state.floor][index][2];
+                    objs[game.state.floor].splice(index, 1);
+                    game.setState({ LifeObjs: objs, life: game.state.life + extralife });
                 } else if (nextRight == JSON.stringify(game.state.exit[game.state.floor])) game.setState({ floor: game.state.floor + 1, playerX: game.state.playerStartingPositions[game.state.floor + 1][0], playerY: game.state.playerStartingPositions[game.state.floor + 1][1] });else if (ava.indexOf(nextRight) > -1) game.setState({ playerX: game.state.playerX + 1 });
                 break;
             //end of the case 'ArrowRight'
@@ -9827,6 +9874,18 @@ class Game extends React.Component {
                         document.getElementById("win").style.display = "block";
                         game.setState(JSON.parse(JSON.stringify(game.state.initial)));
                     }
+                } else if (game.state.weapons[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextDown) > -1) {
+                    let index = game.state.weapons[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextDown);
+                    let weapons = JSON.parse(JSON.stringify(game.state.weapons));
+                    let weapon = weapons[game.state.floor][index];
+                    weapons[game.state.floor].splice(index, 1);
+                    game.setState({ weapons: weapons, damage: game.state.damage + weapon[3], weapon: weapon[2] });
+                } else if (game.state.LifeObjs[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextDown) > -1) {
+                    let index = game.state.LifeObjs[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextDown);
+                    let objs = JSON.parse(JSON.stringify(game.state.LifeObjs));
+                    let extralife = objs[game.state.floor][index][2];
+                    objs[game.state.floor].splice(index, 1);
+                    game.setState({ LifeObjs: objs, life: game.state.life + extralife });
                 } else if (nextDown == JSON.stringify(game.state.exit[game.state.floor])) game.setState({ floor: game.state.floor + 1, playerX: game.state.playerStartingPositions[game.state.floor + 1][0], playerY: game.state.playerStartingPositions[game.state.floor + 1][1] });else if (ava.indexOf(nextDown) > -1) game.setState({ playerY: game.state.playerY + 1 });
                 break;
             //end of the case 'ArrowDown'
@@ -9853,6 +9912,18 @@ class Game extends React.Component {
                         document.getElementById("win").style.display = "block";
                         game.setState(JSON.parse(JSON.stringify(game.state.initial)));
                     }
+                } else if (game.state.weapons[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextLeft) > -1) {
+                    let index = game.state.weapons[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextLeft);
+                    let weapons = JSON.parse(JSON.stringify(game.state.weapons));
+                    let weapon = weapons[game.state.floor][index];
+                    weapons[game.state.floor].splice(index, 1);
+                    game.setState({ weapons: weapons, damage: game.state.damage + weapon[3], weapon: weapon[2] });
+                } else if (game.state.LifeObjs[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextLeft) > -1) {
+                    let index = game.state.LifeObjs[game.state.floor].map(info => JSON.stringify([info[0], info[1]])).indexOf(nextLeft);
+                    let objs = JSON.parse(JSON.stringify(game.state.LifeObjs));
+                    let extralife = objs[game.state.floor][index][2];
+                    objs[game.state.floor].splice(index, 1);
+                    game.setState({ LifeObjs: objs, life: game.state.life + extralife });
                 } else if (nextLeft == JSON.stringify(game.state.exit[game.state.floor])) game.setState({ floor: game.state.floor + 1, playerX: game.state.playerStartingPositions[game.state.floor + 1][0], playerY: game.state.playerStartingPositions[game.state.floor + 1][1] });else if (ava.indexOf(nextLeft) > -1) game.setState({ playerX: game.state.playerX - 1 });
                 break;
             //end of the case 'ArrowLeft'
@@ -9889,10 +9960,11 @@ class Game extends React.Component {
             document.getElementById("death").style.display = "block";
         } else {
             //if the xpRequired to lvlUP is reached the Level is updated and the damaged is 30% more
-            if (nextState.level > this.state.level) this.setState({ damage: Math.ceil(this.state.damage * 1.3) });
             if (this.state.xp < nextState.xp) {
                 let level = this.state.xpRequired.length - this.state.xpRequired.filter(info => info > nextState.xp).length;
-                this.setState({ level: level });
+                let damage = this.state.damage;
+                if (level > this.state.level) damage = Math.ceil(damage * Math.pow(1.3, level - this.state.level));
+                this.setState({ level: level, damage: damage });
             }
         }
     }
@@ -9905,6 +9977,126 @@ class Game extends React.Component {
         return React.createElement(
             "div",
             null,
+            React.createElement(
+                "div",
+                { id: "addEnemy" },
+                "X: ",
+                React.createElement("input", { type: "number", id: "enemyX" }),
+                "Y: ",
+                React.createElement("input", { type: "number", id: "enemyY" }),
+                "Enemy Life: ",
+                React.createElement("input", { type: "number", id: "enemyLife" }),
+                "Enemy Damage: ",
+                React.createElement("input", { type: "number", id: "enemyDmg" }),
+                "Xp granted after Killing: ",
+                React.createElement("input", { type: "number", id: "enemyXP" }),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            document.getElementById("enemyX").value = "";
+                            document.getElementById("enemyY").value = "";
+                            document.getElementById("enemyLife").value = "";
+                            document.getElementById("enemyDmg").value = "";
+                            document.getElementById("enemyXP").value = "";
+                            document.getElementById('addEnemy').style.display = "none";
+                        } },
+                    "Cancel"
+                ),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            var level = JSON.parse(JSON.stringify(this.state));
+                            try {
+                                level.enemies[level.floor].push([JSON.parse(document.getElementById("enemyX").value), JSON.parse(document.getElementById("enemyY").value), JSON.parse(document.getElementById("enemyLife").value), JSON.parse(document.getElementById("enemyDmg").value), JSON.parse(document.getElementById("enemyXP").value)]);
+                                level.initial.enemies[level.floor].push([JSON.parse(document.getElementById("enemyX").value), JSON.parse(document.getElementById("enemyY").value), JSON.parse(document.getElementById("enemyLife").value), JSON.parse(document.getElementById("enemyDmg").value), JSON.parse(document.getElementById("enemyXP").value)]);
+                                document.getElementById("enemyX").value = "";
+                                document.getElementById("enemyY").value = "";
+                                document.getElementById("enemyLife").value = "";
+                                document.getElementById("enemyDmg").value = "";
+                                document.getElementById("enemyXP").value = "";
+                                document.getElementById('addEnemy').style.display = "none";
+                            } catch (error) {}
+                            this.setState(level);
+                        } },
+                    "Set"
+                )
+            ),
+            React.createElement(
+                "div",
+                { id: "addWeapon" },
+                "X: ",
+                React.createElement("input", { type: "number", id: "weaponX" }),
+                "Y: ",
+                React.createElement("input", { type: "number", id: "weaponY" }),
+                "Name: ",
+                React.createElement("input", { type: "text", id: "weaponName" }),
+                "Added Damage: ",
+                React.createElement("input", { type: "number", id: "weaponDmg" }),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            document.getElementById("weaponX").value = "";
+                            document.getElementById("weaponY").value = "";
+                            document.getElementById("weaponName").value = "";
+                            document.getElementById("weaponDmg").value = "";
+                            document.getElementById('addWeapon').style.display = "none";
+                        } },
+                    "Cancel"
+                ),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            var level = JSON.parse(JSON.stringify(this.state));
+                            try {
+                                level.weapons[level.floor].push([JSON.parse(document.getElementById("weaponX").value), JSON.parse(document.getElementById("weaponY").value), document.getElementById("weaponName").value, JSON.parse(document.getElementById("weaponDmg").value)]);
+                                level.initial.weapons[level.floor].push([JSON.parse(document.getElementById("weaponX").value), JSON.parse(document.getElementById("weaponY").value), document.getElementById("weaponName").value, JSON.parse(document.getElementById("weaponDmg").value)]);
+                                this.setState(level);
+                                document.getElementById("weaponX").value = "";
+                                document.getElementById("weaponY").value = "";
+                                document.getElementById("weaponName").value = "";
+                                document.getElementById("weaponDmg").value = "";
+                                document.getElementById('addWeapon').style.display = "none";
+                            } catch (error) {}
+                        } },
+                    "Set"
+                )
+            ),
+            React.createElement(
+                "div",
+                { id: "addLifeObj" },
+                "X: ",
+                React.createElement("input", { type: "number", id: "lifeX" }),
+                "Y: ",
+                React.createElement("input", { type: "number", id: "lifeY" }),
+                "Added Life: ",
+                React.createElement("input", { type: "number", id: "lifeLife" }),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            document.getElementById("lifeX").value = "";
+                            document.getElementById("lifeY").value = "";
+                            document.getElementById("lifeLife").value = "";
+                            document.getElementById('addLifeObj').style.display = "none";
+                        } },
+                    "Cancel"
+                ),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            var level = JSON.parse(JSON.stringify(this.state));
+                            try {
+                                level.LifeObjs[level.floor].push([JSON.parse(document.getElementById("lifeX").value), JSON.parse(document.getElementById("lifeY").value), JSON.parse(document.getElementById("lifeLife").value)]);
+                                level.initial.LifeObjs[level.floor].push([JSON.parse(document.getElementById("lifeX").value), JSON.parse(document.getElementById("lifeY").value), JSON.parse(document.getElementById("lifeLife").value)]);
+                                document.getElementById('addLifeObj').style.display = "none";
+                                document.getElementById("lifeX").value = "";
+                                document.getElementById("lifeY").value = "";
+                                document.getElementById("lifeLife").value = "";
+                            } catch (error) {}
+                            this.setState(level);
+                        } },
+                    "Set"
+                )
+            ),
             React.createElement(
                 "div",
                 { id: "copy" },
@@ -9921,13 +10113,20 @@ class Game extends React.Component {
                 React.createElement(
                     "button",
                     { onClick: () => {
-                            var level = JSON.parse(document.getElementById("copyInput").value);
-                            level.index = storage.length;
-                            storage.push(level);
-                            localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
-                            document.getElementById("copyInput").value = "";
-                            document.getElementById('copy').style.display = "none";
-                            this.setState(this.state);
+                            var level;
+                            try {
+                                level = JSON.parse(document.getElementById("copyInput").value);
+                            } catch (error) {}
+                            if (typeof level == "object") {
+                                if (level.length == this.state.length) {
+                                    level.index = storage.length;
+                                    storage.push(level);
+                                    localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
+                                    document.getElementById("copyInput").value = "";
+                                    document.getElementById('copy').style.display = "none";
+                                    this.forceUpdate();
+                                }
+                            }
                         } },
                     "Add the Level!"
                 )
@@ -10187,6 +10386,10 @@ class Game extends React.Component {
                             state.exit.splice(index, 1);
                             state.enemies.splice(index, 1);
                             state.playerStartingPositions.splice(index, 1);
+                            state.weapons.splice(index, 1);
+                            state.LifeObjs.splice(index, 1);
+                            state.initial.weapons.splice(index, 1);
+                            state.initial.LifeObjs.splice(index, 1);
                             state.initial.enemies.splice(index, 1);
                             if (state.floor == index) {
                                 state.floor = index - 1;
@@ -10216,29 +10419,35 @@ class Game extends React.Component {
                     "life: ",
                     this.state.life
                 ),
+                " || ",
                 React.createElement(
                     "span",
                     null,
-                    "Weapon:"
+                    "Weapon: ",
+                    this.state.weapon
                 ),
+                "  || ",
                 React.createElement(
                     "span",
                     null,
                     "Level: ",
                     this.state.level
                 ),
+                " || ",
                 React.createElement(
                     "span",
                     null,
                     "damage: ",
                     this.state.damage
                 ),
+                " || ",
                 React.createElement(
                     "span",
                     null,
                     "xp: ",
                     this.state.xp
                 ),
+                " || ",
                 React.createElement(
                     "span",
                     null,
@@ -10263,11 +10472,15 @@ class Game extends React.Component {
                                 xp: 0,
                                 positions: [[[0, 0, 10, 10]]],
                                 enemies: [[[2, 2, 10, 10, 300]]],
+                                weapons: [[]],
+                                LifeObjs: [[]],
                                 exit: [],
                                 x: 0, y: 0, dead: false,
                                 boss: [5, 5, 10, 13], edit: false, playerX: 0, playerY: 0, floor: 0,
                                 initial: {
                                     enemies: [[[2, 2, 10, 10, 300]]],
+                                    weapons: [[]],
+                                    LifeObjs: [[]],
                                     playerX: 0,
                                     playerY: 0,
                                     xp: 0,
@@ -10302,7 +10515,7 @@ class Game extends React.Component {
                             f.name = f.name + " Session: " + date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + "  " + date.getHours() + ":" + date.getMinutes();
                             f.index = storage.length;
                             storage.push(f);
-                            this.setState(this.state);
+                            this.forceUpdate();
                             localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
                         } },
                     "Save Session"
@@ -10351,7 +10564,11 @@ class Game extends React.Component {
                                 state.exit.push([0, 0]);
                                 state.enemies.push([[2, 2, 10, 10, 300]]);
                                 state.playerStartingPositions.push([1, 1]);
+                                state.weapons.push([]);
+                                state.LifeObjs.push([]);
                                 state.initial.enemies.push([[2, 2, 10, 10, 300]]);
+                                state.initial.weapons.push([]);
+                                state.initial.LifeObjs.push([]);
                                 this.setState(state);
                             } },
                         "Add Floor"
@@ -10380,7 +10597,7 @@ class Game extends React.Component {
                                 for (let i in level.initial) level[i] = level.initial[i];
                                 storage[level.index] = level;
                                 localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
-                                this.setState(this.state);
+                                this.forceUpdate();
                             } },
                         "Save Changes"
                     ) : React.createElement(
@@ -10403,19 +10620,30 @@ class Game extends React.Component {
                                 level.name = level.name + " Copy " + num;
                                 storage.push(level);
                                 localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
-                                this.setState(this.state);
+                                this.forceUpdate();
                             } },
                         "Make a Copy of this level"
                     ),
                     React.createElement(
                         "button",
-                        { onClick: () => {} },
-                        "Delete Enemies"
+                        { onClick: () => {
+                                document.getElementById("addEnemy").style.display = "block";
+                            } },
+                        "Add Enemy"
                     ),
                     React.createElement(
                         "button",
-                        { onClick: () => {} },
-                        "Add Enemy"
+                        { onClick: () => {
+                                document.getElementById("addWeapon").style.display = "block";
+                            } },
+                        "Add Weapon"
+                    ),
+                    React.createElement(
+                        "button",
+                        { onClick: () => {
+                                document.getElementById("addLifeObj").style.display = "block";
+                            } },
+                        "Add LifeObj"
                     ),
                     React.createElement(
                         "button",
@@ -10468,16 +10696,18 @@ class Game extends React.Component {
                         React.createElement(
                             "button",
                             { onClick: () => {
-                                    document.getElementById('addAreaButton').style.display = "inline";
-                                    document.getElementById('addArea').style.display = "none";
-                                    let newPosition = [JSON.parse(document.getElementById('addAreaInput1').value), JSON.parse(document.getElementById('addAreaInput2').value), JSON.parse(document.getElementById('addAreaInput3').value), JSON.parse(document.getElementById('addAreaInput4').value)];
-                                    let positions = this.state.positions;
-                                    positions[this.state.floor].push(newPosition);
-                                    this.setState({ positions: positions });
-                                    document.getElementById('addAreaInput1').value = '';
-                                    document.getElementById('addAreaInput2').value = '';
-                                    document.getElementById('addAreaInput3').value = '';
-                                    document.getElementById('addAreaInput4').value = '';
+                                    try {
+                                        let newPosition = [JSON.parse(document.getElementById('addAreaInput1').value), JSON.parse(document.getElementById('addAreaInput2').value), JSON.parse(document.getElementById('addAreaInput3').value), JSON.parse(document.getElementById('addAreaInput4').value)];
+                                        let positions = this.state.positions;
+                                        positions[this.state.floor].push(newPosition);
+                                        this.setState({ positions: positions });
+                                        document.getElementById('addAreaInput1').value = '';
+                                        document.getElementById('addAreaInput2').value = '';
+                                        document.getElementById('addAreaInput3').value = '';
+                                        document.getElementById('addAreaInput4').value = '';
+                                        document.getElementById('addAreaButton').style.display = "inline";
+                                        document.getElementById('addArea').style.display = "none";
+                                    } catch (error) {}
                                 } },
                             "Add Area"
                         )
@@ -10499,7 +10729,7 @@ class Game extends React.Component {
                     "div",
                     { className: "game" },
                     this.state.positions[this.state.floor].map((info, index) => React.createElement(Area, { x: info[0], y: info[1], width: info[2], height: info[3], edit: this.state.edit, index: index, key: index })),
-                    this.state.enemies[this.state.floor].map((info, index) => React.createElement(Enemys, { x: info[0], y: info[1], key: 'enemy' + index })),
+                    this.state.enemies[this.state.floor].map((info, index) => React.createElement(Enemys, { x: info[0], y: info[1], key: 'enemy' + index, edit: this.state.edit, index: index })),
                     this.state.floor == this.state.positions.length - 1 ? React.createElement("div", { style: {
                             width: "2rem",
                             height: "2rem",
@@ -10508,7 +10738,9 @@ class Game extends React.Component {
                             zIndex: 5000,
                             left: this.state.x + this.state.boss[0] + "rem",
                             top: this.state.y + this.state.boss[1] + "rem"
-                        } }) : React.createElement(Exit, { x: this.state.exit[this.state.floor][0], y: this.state.exit[this.state.floor][1] })
+                        } }) : React.createElement(Exit, { x: this.state.exit[this.state.floor][0], y: this.state.exit[this.state.floor][1] }),
+                    this.state.LifeObjs[this.state.floor].map((info, index) => React.createElement(LifeObj, { x: info[0], y: info[1], key: "lifeObj" + index, edit: this.state.edit, index: index })),
+                    this.state.weapons[this.state.floor].map((info, index) => React.createElement(Weapon, { x: info[0], y: info[1], key: 'weapon' + index, edit: this.state.edit, index: index }))
                 ),
                 React.createElement("div", { className: "player", style: {
                         width: '1rem',
