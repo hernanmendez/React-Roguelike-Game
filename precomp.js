@@ -350,6 +350,7 @@ componentWillUpdate(nextProps,nextState){
     if(nextState.life<=0){
         //if the life of the player is less than or equal to 0 the level is reseted
         this.setState(JSON.parse(JSON.stringify(this.state.initial)));
+        document.getElementById("death").style.display="block";
     }
   else {
       //if the xpRequired to lvlUP is reached the Level is updated and the damaged is 30% more
@@ -368,6 +369,75 @@ componentWillUpdate(nextProps,nextState){
 render(){  
 return (
 <div>
+    <div id="copy">
+        Paste the Level Info here: <input type="text" id="copyInput"/>
+        <button onClick={()=>{
+            document.getElementById("copyInput").value="";
+            document.getElementById('copy').style.display="none";
+            }}>Cancel</button>
+        <button onClick={()=>{
+            var level = JSON.parse(document.getElementById("copyInput").value);
+            level.index=storage.length;
+            storage.push(level);
+            localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify(storage));
+            document.getElementById("copyInput").value="";
+            document.getElementById('copy').style.display="none";
+            this.setState(this.state);
+            }}>Add the Level!</button>
+    </div>
+    <div id="share">
+        <p>Copy this:</p>
+        <p>{JSON.stringify(storage[this.state.index])}</p>
+        <button onClick={()=>{document.getElementById("share").style.display="none"}}>close</button>
+    </div>
+    <div id="changeIniPos">
+        X: <input type="number" id="newIniX"/>
+        y: <input type="number" id="newIniY"/>
+        <button onClick={()=>{
+            document.getElementById("changeIniPos").style.display="none";
+            document.getElementById("newIniX").value="";
+            document.getElementById("newIniY").value="";
+            }}>cancel</button>
+        <button onClick={()=>{
+            var StartPos = JSON.parse(JSON.stringify(this.state.playerStartingPositions));
+            if(document.getElementById("newIniX").value) StartPos[this.state.floor][0]=JSON.parse(document.getElementById("newIniX").value);
+            if(document.getElementById("newIniY").value) StartPos[this.state.floor][1]=JSON.parse(document.getElementById("newIniY").value);
+            document.getElementById("newIniX").value="";
+            document.getElementById("newIniY").value="";
+            document.getElementById("changeIniPos").style.display="none";
+            var level=JSON.parse(JSON.stringify(this.state));
+            level.playerStartingPositions = StartPos;
+            level.initial.playerX=StartPos[0][0];
+            level.initial.playerY=StartPos[0][1];
+            for(let i in level.initial)level[i]=level.initial[i];
+            this.setState(level);
+            storage[level.index] = level;
+            localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify(storage))
+            }}>Set and Reset</button>
+    </div>
+    <div id="changeIniProp">
+        life: <input type="number" id="newIniLife"/>
+        damage: <input type="number" id="newIniDamage"/>
+        <button onClick={()=>{
+            document.getElementById("changeIniProp").style.display="none";
+            document.getElementById("newIniLife").value="";
+            document.getElementById("newIniDamage").value="";
+            }}>cancel</button>
+        <button onClick={()=>{
+            var StartProp = JSON.parse(JSON.stringify(this.state.initial));
+            if(document.getElementById("newIniLife").value) StartProp.life=JSON.parse(document.getElementById("newIniLife").value);
+            if(document.getElementById("newIniDamage").value) StartProp.damage=JSON.parse(document.getElementById("newIniDamage").value);
+            document.getElementById("changeIniProp").style.display="none";
+            document.getElementById("newIniLife").value="";
+            document.getElementById("newIniDamage").value="";
+            var level=JSON.parse(JSON.stringify(this.state));
+            level.initial = StartProp;
+            for(let i in level.initial)level[i]=level.initial[i];
+            this.setState(level);
+            storage[level.index] = level;
+            localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify(storage))
+            }}>Set and Reset</button>
+    </div>
     <div id="typeName">
         Name: <input id="levelName"/>
         <button onClick={()=>{document.getElementById("typeName").style.display="none"; document.getElementById("levelName").value=""}}>Cancel</button>
@@ -380,6 +450,13 @@ return (
                 document.getElementById("levelName").value="";
                 document.getElementById("typeName").style.display="none";
                 }}>Save</button>
+    </div>
+    <div id="death">
+        <div>
+            <h1>You Died</h1>
+            <p>Click the button below to reset the level</p>
+            <button onClick={()=>{document.getElementById("death").style.display="none"}}>Reset</button>
+        </div>
     </div>
     <div id="win">
         <div>
@@ -423,6 +500,17 @@ return (
                 <div key={'Level'+index} onClick={()=>{document.getElementById("chooseLevel").style.display="none";game.setState(JSON.parse(JSON.stringify(storage))[index])}}>
                     <p>{info.name}</p>
                     <br />
+                    {
+                       index!=0 ?
+                    (<button onClick={()=>{
+                        storage.splice(index,1); 
+                        localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify(storage));
+                        var level = this.state.index;
+                        if(index == level){
+                        this.setState(storage[0]);
+                        }
+                        }}>Delete</button>):''
+                    }
                 </div>
             ))
         }
@@ -449,6 +537,46 @@ return (
     }
     <button onClick={()=>{document.getElementById("chooseFloorToDelete").style.display="none"}}>Cancel</button>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div className="controls">
     
 <span>life: {this.state.life}</span><span>Weapon:</span><span>Level: {this.state.level}</span><span>damage: {this.state.damage}</span><span>xp: {this.state.xp}</span><span>floor:{this.state.floor+1}</span>
@@ -484,20 +612,23 @@ return (
 
     }}>Make a custom Level</button>
 
-
 {
     this.state.edit?<button onClick={()=>{this.setState({edit: !this.state.edit})}}>Turn off Edit Mode</button>:<button onClick={()=>{this.setState({edit: !this.state.edit})}}>Turn on Edit Mode</button>
 }
+
 <button onClick={()=>{
     var f = JSON.parse(JSON.stringify(this.state));
     var date = new Date();
     f.name = f.name+ " Session: " + date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + "  " + date.getHours()+":"+date.getMinutes();
     f.index = storage.length;
             storage.push(f);
-
+            this.setState(this.state);
             localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify(storage));
             
             }}>Save Session</button>
+            <button onClick={()=>{this.setState(JSON.parse(JSON.stringify(this.state.initial)));}}>Reset</button>
+            <button onClick={()=>{document.getElementById("share").style.display="block"}}>Share this Level</button>
+            <button onClick={()=>{document.getElementById("copy").style.display="block"}}>Download a Level</button>
 {
     this.state.edit? (
     <div>
@@ -529,16 +660,29 @@ return (
                 for(let i in level.initial)level[i] = level.initial[i];
                 storage[level.index]=level;
                 localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify(storage));
+                this.setState(this.state);
                 }}>Save Changes</button>)
                 :
                 (<button onClick={()=>{document.getElementById('typeName').style.display="block";}}>Save Current Custom Level As</button>)
         }
-        <button>Make a Copy of this level</button>
-        <button>Reset</button>
-        <button>Share this Level</button>
-        <button>Delete Enemies</button>
-        <button>Add Enemies</button>
-        <button>Change Starting Position</button>
+        <button onClick={()=>{
+            var level=JSON.parse(JSON.stringify(this.state));
+            for(let i in level.initial)level[i]=level.initial[i];
+            level.index = storage.length;
+            var num=0;
+            for(let i of storage){
+                if(i.name.slice(0,level.name.length) == level.name)num++;
+            }
+            level.name= level.name+" Copy "+num;
+            storage.push(level);
+            localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify(storage))
+            this.setState(this.state);
+            }}>Make a Copy of this level</button>
+
+        <button onClick={()=>{}}>Delete Enemies</button>
+        <button onClick={()=>{}}>Add Enemy</button>
+        <button onClick={()=>{document.getElementById("changeIniProp").style.display="block"}}>Chage initial properties</button>
+        <button onClick={()=>{document.getElementById("changeIniPos").style.display="block"}}>Change initial Position</button>
         {
         (this.state.floor==this.state.exit.length)?(<button onClick={()=>{document.getElementById("changeBossStats").style.display="block";}}>Change Boss Stats</button>):(<button>Change Exit Position</button>)
         }

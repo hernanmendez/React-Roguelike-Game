@@ -9886,6 +9886,7 @@ class Game extends React.Component {
         if (nextState.life <= 0) {
             //if the life of the player is less than or equal to 0 the level is reseted
             this.setState(JSON.parse(JSON.stringify(this.state.initial)));
+            document.getElementById("death").style.display = "block";
         } else {
             //if the xpRequired to lvlUP is reached the Level is updated and the damaged is 30% more
             if (nextState.level > this.state.level) this.setState({ damage: Math.ceil(this.state.damage * 1.3) });
@@ -9904,6 +9905,126 @@ class Game extends React.Component {
         return React.createElement(
             "div",
             null,
+            React.createElement(
+                "div",
+                { id: "copy" },
+                "Paste the Level Info here: ",
+                React.createElement("input", { type: "text", id: "copyInput" }),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            document.getElementById("copyInput").value = "";
+                            document.getElementById('copy').style.display = "none";
+                        } },
+                    "Cancel"
+                ),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            var level = JSON.parse(document.getElementById("copyInput").value);
+                            level.index = storage.length;
+                            storage.push(level);
+                            localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
+                            document.getElementById("copyInput").value = "";
+                            document.getElementById('copy').style.display = "none";
+                            this.setState(this.state);
+                        } },
+                    "Add the Level!"
+                )
+            ),
+            React.createElement(
+                "div",
+                { id: "share" },
+                React.createElement(
+                    "p",
+                    null,
+                    "Copy this:"
+                ),
+                React.createElement(
+                    "p",
+                    null,
+                    JSON.stringify(storage[this.state.index])
+                ),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            document.getElementById("share").style.display = "none";
+                        } },
+                    "close"
+                )
+            ),
+            React.createElement(
+                "div",
+                { id: "changeIniPos" },
+                "X: ",
+                React.createElement("input", { type: "number", id: "newIniX" }),
+                "y: ",
+                React.createElement("input", { type: "number", id: "newIniY" }),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            document.getElementById("changeIniPos").style.display = "none";
+                            document.getElementById("newIniX").value = "";
+                            document.getElementById("newIniY").value = "";
+                        } },
+                    "cancel"
+                ),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            var StartPos = JSON.parse(JSON.stringify(this.state.playerStartingPositions));
+                            if (document.getElementById("newIniX").value) StartPos[this.state.floor][0] = JSON.parse(document.getElementById("newIniX").value);
+                            if (document.getElementById("newIniY").value) StartPos[this.state.floor][1] = JSON.parse(document.getElementById("newIniY").value);
+                            document.getElementById("newIniX").value = "";
+                            document.getElementById("newIniY").value = "";
+                            document.getElementById("changeIniPos").style.display = "none";
+                            var level = JSON.parse(JSON.stringify(this.state));
+                            level.playerStartingPositions = StartPos;
+                            level.initial.playerX = StartPos[0][0];
+                            level.initial.playerY = StartPos[0][1];
+                            for (let i in level.initial) level[i] = level.initial[i];
+                            this.setState(level);
+                            storage[level.index] = level;
+                            localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
+                        } },
+                    "Set and Reset"
+                )
+            ),
+            React.createElement(
+                "div",
+                { id: "changeIniProp" },
+                "life: ",
+                React.createElement("input", { type: "number", id: "newIniLife" }),
+                "damage: ",
+                React.createElement("input", { type: "number", id: "newIniDamage" }),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            document.getElementById("changeIniProp").style.display = "none";
+                            document.getElementById("newIniLife").value = "";
+                            document.getElementById("newIniDamage").value = "";
+                        } },
+                    "cancel"
+                ),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            var StartProp = JSON.parse(JSON.stringify(this.state.initial));
+                            if (document.getElementById("newIniLife").value) StartProp.life = JSON.parse(document.getElementById("newIniLife").value);
+                            if (document.getElementById("newIniDamage").value) StartProp.damage = JSON.parse(document.getElementById("newIniDamage").value);
+                            document.getElementById("changeIniProp").style.display = "none";
+                            document.getElementById("newIniLife").value = "";
+                            document.getElementById("newIniDamage").value = "";
+                            var level = JSON.parse(JSON.stringify(this.state));
+                            level.initial = StartProp;
+                            for (let i in level.initial) level[i] = level.initial[i];
+                            this.setState(level);
+                            storage[level.index] = level;
+                            localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
+                        } },
+                    "Set and Reset"
+                )
+            ),
             React.createElement(
                 "div",
                 { id: "typeName" },
@@ -9929,6 +10050,31 @@ class Game extends React.Component {
                             document.getElementById("typeName").style.display = "none";
                         } },
                     "Save"
+                )
+            ),
+            React.createElement(
+                "div",
+                { id: "death" },
+                React.createElement(
+                    "div",
+                    null,
+                    React.createElement(
+                        "h1",
+                        null,
+                        "You Died"
+                    ),
+                    React.createElement(
+                        "p",
+                        null,
+                        "Click the button below to reset the level"
+                    ),
+                    React.createElement(
+                        "button",
+                        { onClick: () => {
+                                document.getElementById("death").style.display = "none";
+                            } },
+                        "Reset"
+                    )
                 )
             ),
             React.createElement(
@@ -10015,7 +10161,19 @@ class Game extends React.Component {
                         null,
                         info.name
                     ),
-                    React.createElement("br", null)
+                    React.createElement("br", null),
+                    index != 0 ? React.createElement(
+                        "button",
+                        { onClick: () => {
+                                storage.splice(index, 1);
+                                localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
+                                var level = this.state.index;
+                                if (index == level) {
+                                    this.setState(storage[0]);
+                                }
+                            } },
+                        "Delete"
+                    ) : ''
                 ))
             ),
             React.createElement(
@@ -10144,10 +10302,31 @@ class Game extends React.Component {
                             f.name = f.name + " Session: " + date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + "  " + date.getHours() + ":" + date.getMinutes();
                             f.index = storage.length;
                             storage.push(f);
-
+                            this.setState(this.state);
                             localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
                         } },
                     "Save Session"
+                ),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            this.setState(JSON.parse(JSON.stringify(this.state.initial)));
+                        } },
+                    "Reset"
+                ),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            document.getElementById("share").style.display = "block";
+                        } },
+                    "Share this Level"
+                ),
+                React.createElement(
+                    "button",
+                    { onClick: () => {
+                            document.getElementById("copy").style.display = "block";
+                        } },
+                    "Download a Level"
                 ),
                 this.state.edit ? React.createElement(
                     "div",
@@ -10201,6 +10380,7 @@ class Game extends React.Component {
                                 for (let i in level.initial) level[i] = level.initial[i];
                                 storage[level.index] = level;
                                 localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
+                                this.setState(this.state);
                             } },
                         "Save Changes"
                     ) : React.createElement(
@@ -10212,33 +10392,44 @@ class Game extends React.Component {
                     ),
                     React.createElement(
                         "button",
-                        null,
+                        { onClick: () => {
+                                var level = JSON.parse(JSON.stringify(this.state));
+                                for (let i in level.initial) level[i] = level.initial[i];
+                                level.index = storage.length;
+                                var num = 0;
+                                for (let i of storage) {
+                                    if (i.name.slice(0, level.name.length) == level.name) num++;
+                                }
+                                level.name = level.name + " Copy " + num;
+                                storage.push(level);
+                                localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
+                                this.setState(this.state);
+                            } },
                         "Make a Copy of this level"
                     ),
                     React.createElement(
                         "button",
-                        null,
-                        "Reset"
-                    ),
-                    React.createElement(
-                        "button",
-                        null,
-                        "Share this Level"
-                    ),
-                    React.createElement(
-                        "button",
-                        null,
+                        { onClick: () => {} },
                         "Delete Enemies"
                     ),
                     React.createElement(
                         "button",
-                        null,
-                        "Add Enemies"
+                        { onClick: () => {} },
+                        "Add Enemy"
                     ),
                     React.createElement(
                         "button",
-                        null,
-                        "Change Starting Position"
+                        { onClick: () => {
+                                document.getElementById("changeIniProp").style.display = "block";
+                            } },
+                        "Chage initial properties"
+                    ),
+                    React.createElement(
+                        "button",
+                        { onClick: () => {
+                                document.getElementById("changeIniPos").style.display = "block";
+                            } },
+                        "Change initial Position"
                     ),
                     this.state.floor == this.state.exit.length ? React.createElement(
                         "button",
