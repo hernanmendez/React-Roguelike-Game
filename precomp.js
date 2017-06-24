@@ -1,6 +1,6 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
-localStorage.clear();
+
 if(!localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames')){
 localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify([{
     index: 0,
@@ -10,7 +10,7 @@ localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.strin
         x:0 , y:0 ,dead: false, 
         positions:[
             [[2,2,10,10],[12,3,1,1],[13,2,5,5],[18,5,1,1],[19,2,4,10],[15,7,1,10],[8,17,20,5],[10,22,1,1],[25,22,1,1],[23,3,5,1],[23,9,1,1],[24,7,7,9],[7,23,7,6],[22,23,8,3],[28,3,7,10],[34,1,4,5],[25,16,1,1],[28,18,5,1],[32,13,1,6],[32,19,5,5]],
-            [[10,20, 5,5],[12,19,1,1],[12,16,15,3],[22,12,7,7],[25,11,1,1],[25,10,6,1]],
+            [[10,20, 5,5],[12,19,1,1],[12,16,15,3],[22,12,7,7],[25,11,1,1],[25,10,30,1]],
             [],
             []],
             //enemy is done like [Xposition,Yposition,life,damage,xp]
