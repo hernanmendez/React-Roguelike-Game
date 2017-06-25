@@ -1,6 +1,6 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
-
+localStorage.clear();
 if(!localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames')){
 localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.stringify([{
     index: 0,
@@ -10,31 +10,31 @@ localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames',JSON.strin
         x:0 , y:0 ,dead: false, 
         positions:[
             [[2,2,10,10],[12,3,1,1],[13,2,5,5],[18,5,1,1],[19,2,4,10],[15,7,1,10],[8,17,20,5],[10,22,1,1],[25,22,1,1],[23,3,5,1],[23,9,1,1],[24,7,7,9],[7,23,7,6],[22,23,8,3],[28,3,7,10],[34,1,4,5],[25,16,1,1],[28,18,5,1],[32,13,1,6],[32,19,5,5]],
-            [[10,20, 5,5],[12,19,1,1],[12,16,15,3],[22,12,7,7],[25,11,1,1],[25,10,30,1]],
-            [],
-            []],
+            [[10,20, 5,5],[12,19,1,1],[12,16,15,3],[22,12,7,7],[25,11,1,1],[25,10,31,1],[12,9,1,7],[13,9,15,1],[55,11,1,12],[23,22,33,1]],
+            [[12,22,11,1]],
+            [[-2,-2,10,10]]],
             //enemy is done like [Xposition,Yposition,life,damage,xp]
-            enemies: [[[28,18,100,50,100],[23,9,100,30,40],[20,5,100,25,20]],[],[],[]],
-            exit:[[34,22],[22,22],[]],
+            enemies: [[[28,18,100,50,35],[23,9,100,30,15],[20,5,100,25,20],[25,21,300,50,60],[32,19,250,50,50],[32,12,100,50,35]],[[12,16,350,100,300],[21,16,100,30,50],[21,17,100,30,50],[21,18,100,30,50],[25,10,100,30,50],[12,11,1,1,20],[13,9,100,100,30],[55,10,600,100,200],[31,8,1,1,1],[32,8,1,1,1],[33,8,1,1,1],[34,8,1,1,1],[35,8,1,1,1],[36,8,1,1,1],[31,12,1,1,1],[32,12,1,1,1],[33,12,1,1,1],[34,12,1,1,1],[35,12,1,1,1],[36,12,1,1,1]],[],[]],
+            exit:[[34,22],[22,22],[22,22]],
             //posX,posY,name,aditional damage
-            weapons:[[[12,19,"Damaged Dagger",5],[8,27,"katana",20]],[],[],[]],
+            weapons:[[[12,19,"Damaged Dagger",5],[8,27,"katana",20],[30,8,"Big stick",6],[34,21,"just another stick",40]],[[12,10,"U R SPECIAL-stick",30]],[],[]],
             //posX,posY,aditional life
-            LifeObjs:[[[10,8,100],[34,22,400]],[],[],[]],
+            LifeObjs:[[[10,8,100],[34,22,400],[25,24,300],[30,18,250],[19,2,150]],[[12,9,500],[28,18,200],[27,9,200]],[[13,21,50],[14,21,50],[15,21,50],[16,21,50],[17,21,50],[18,21,50],[19,21,50],[20,21,50],[21,21,50],[13,23,50],[14,23,50],[15,23,50],[16,23,50],[17,23,50],[18,23,50],[19,23,50],[20,23,50],[21,23,50]],[]],
             //boss is done like [Xposition,Yposition,life,damage,xp]
-            boss:[0,0,1000,15],edit: false, playerX: 3 , playerY: 3,floor:0,
+            boss:[0,0,1700,180],edit: false, playerX: 3 , playerY: 3,floor:0,
             initial: {
-                enemies: [[[28,18,100,50,100],[23,9,100,30,40],[20,5,100,25,20]],[],[],[]],
-                weapons:[[[12,19,"Damaged Dagger",5],[8,27,"katana",20]],[],[],[]],
-                LifeObjs:[[[10,8,100],[34,22,400]],[],[],[]],
+                enemies: [[[28,18,100,50,35],[23,9,100,30,15],[20,5,100,25,20],[25,21,300,50,60],[32,19,250,50,50],[32,12,100,50,35]],[[12,16,350,100,300],[21,16,100,30,50],[21,17,100,30,50],[21,18,100,30,50],[25,10,100,30,50],[12,11,1,1,20],[13,9,100,100,30],[55,10,600,100,200],[31,8,1,1,1],[32,8,1,1,1],[33,8,1,1,1],[34,8,1,1,1],[35,8,1,1,1],[36,8,1,1,1],[31,12,1,1,1],[32,12,1,1,1],[33,12,1,1,1],[34,12,1,1,1],[35,12,1,1,1],[36,12,1,1,1]],[],[]],
+                weapons:[[[12,19,"Damaged Dagger",5],[8,27,"katana",20],[30,8,"Big stick",6],[34,21,"just another stick",40]],[[12,10,"U R SPECIAL-stick",30]],[],[]],
+                LifeObjs:[[[10,8,100],[34,22,400],[25,24,300],[30,18,250],[19,2,150]],[[12,9,500],[28,18,200],[27,9,200]],[[13,21,50],[14,21,50],[15,21,50],[16,21,50],[17,21,50],[18,21,50],[19,21,50],[20,21,50],[21,21,50],[13,23,50],[14,23,50],[15,23,50],[16,23,50],[17,23,50],[18,23,50],[19,23,50],[20,23,50],[21,23,50]],[]],
                 playerX: 3,
                 playerY: 3,
                 xp: 0,
                 level: 0,
                 damage: 20,
                 life: 400,
-                boss:[0,0,1000,15],
+                boss:[0,0,1700,180],
             floor:0},
-                show:[false],playerStartingPositions:[[3,3],[12,22],[12,22],[12,22]]
+                show:[false],playerStartingPositions:[[3,3],[12,22],[12,22],[7,7]]
     }]));}
     var storage = JSON.parse(localStorage.getItem('_codepen.io_hernanmendez_roguelike_customGames'));
 /*
@@ -701,7 +701,9 @@ return (
     this.state.playerStartingPositions.map((info,index)=><button onClick={()=>{
         var state=JSON.parse(JSON.stringify(this.state));
         state.positions.splice(index,1);
-        state.exit.splice(index,1);
+        if(index==state.positions.length)
+        state.exit.splice(index-1,1);
+        else state.exit.splice(index,1);
         state.enemies.splice(index,1);
         state.playerStartingPositions.splice(index,1);
         state.weapons.splice(index,1);
