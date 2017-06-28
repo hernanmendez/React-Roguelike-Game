@@ -328,12 +328,15 @@ class Game extends React.Component {
     render() {
         return (
             <div>
+
                 <div id="addEnemy">
+
                     X: <input type="number" id="enemyX" />
                     Y: <input type="number" id="enemyY" />
                     Enemy Life: <input type="number" id="enemyLife" />
                     Enemy Damage: <input type="number" id="enemyDmg" />
                     Xp granted after Killing: <input type="number" id="enemyXP" />
+
                     <button onClick={() => {
                         document.getElementById("enemyX").value = "";
                         document.getElementById("enemyY").value = "";
@@ -342,6 +345,7 @@ class Game extends React.Component {
                         document.getElementById("enemyXP").value = "";
                         document.getElementById('addEnemy').style.display = "none";
                     }}>Cancel</button>
+
                     <button onClick={() => {
                         var level = JSON.parse(JSON.stringify(this.state));
                         try {
@@ -365,12 +369,17 @@ class Game extends React.Component {
                         catch (error) { }
                         this.setState(level);
                     }}>Set</button>
+
                 </div>
+
+
+
                 <div id="addWeapon">
                     X: <input type="number" id="weaponX" />
                     Y: <input type="number" id="weaponY" />
                     Name: <input type="text" id="weaponName" />
                     Added Damage: <input type="number" id="weaponDmg" />
+
                     <button onClick={() => {
                         document.getElementById("weaponX").value = "";
                         document.getElementById("weaponY").value = "";
@@ -378,6 +387,7 @@ class Game extends React.Component {
                         document.getElementById("weaponDmg").value = "";
                         document.getElementById('addWeapon').style.display = "none";
                     }}>Cancel</button>
+
                     <button onClick={() => {
                         var level = JSON.parse(JSON.stringify(this.state));
                         try {
@@ -398,17 +408,24 @@ class Game extends React.Component {
                         }
                         catch (error) { }
                     }}>Set</button>
+
                 </div>
+
+
+
                 <div id="addLifeObj">
+
                     X: <input type="number" id="lifeX" />
                     Y: <input type="number" id="lifeY" />
                     Added Life: <input type="number" id="lifeLife" />
+
                     <button onClick={() => {
                         document.getElementById("lifeX").value = "";
                         document.getElementById("lifeY").value = "";
                         document.getElementById("lifeLife").value = "";
                         document.getElementById('addLifeObj').style.display = "none";
                     }}>Cancel</button>
+
                     <button onClick={() => {
                         var level = JSON.parse(JSON.stringify(this.state));
                         try {
@@ -422,13 +439,19 @@ class Game extends React.Component {
                         catch (error) { }
                         this.setState(level);
                     }}>Set</button>
+
                 </div>
+
+
+
                 <div id="copy">
+
                     Paste the Level Info here: <input type="text" id="copyInput" />
                     <button onClick={() => {
                         document.getElementById("copyInput").value = "";
                         document.getElementById('copy').style.display = "none";
                     }}>Cancel</button>
+
                     <button onClick={() => {
                         var level;
                         try { level = JSON.parse(document.getElementById("copyInput").value); }
@@ -444,20 +467,30 @@ class Game extends React.Component {
                             }
                         }
                     }}>Add the Level!</button>
+
                 </div>
+
+
+
                 <div id="share">
                     <p>Copy this:</p>
                     <p>{JSON.stringify(storage[this.state.index])}</p>
                     <button onClick={() => { document.getElementById("share").style.display = "none" }}>close</button>
                 </div>
+
+
+
                 <div id="changeIniPos">
+
                     X: <input type="number" id="newIniX" />
                     y: <input type="number" id="newIniY" />
+
                     <button onClick={() => {
                         document.getElementById("changeIniPos").style.display = "none";
                         document.getElementById("newIniX").value = "";
                         document.getElementById("newIniY").value = "";
                     }}>cancel</button>
+
                     <button onClick={() => {
                         var StartPos = JSON.parse(JSON.stringify(this.state.playerStartingPositions));
                         if (document.getElementById("newIniX").value) StartPos[this.state.floor][0] = JSON.parse(document.getElementById("newIniX").value);
@@ -474,15 +507,22 @@ class Game extends React.Component {
                         storage[level.index] = level;
                         localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage))
                     }}>Set and Reset</button>
+
                 </div>
+
+
+
                 <div id="changeIniProp">
+
                     life: <input type="number" id="newIniLife" />
                     damage: <input type="number" id="newIniDamage" />
+
                     <button onClick={() => {
                         document.getElementById("changeIniProp").style.display = "none";
                         document.getElementById("newIniLife").value = "";
                         document.getElementById("newIniDamage").value = "";
                     }}>cancel</button>
+
                     <button onClick={() => {
                         var StartProp = JSON.parse(JSON.stringify(this.state.initial));
                         if (document.getElementById("newIniLife").value) StartProp.life = JSON.parse(document.getElementById("newIniLife").value);
@@ -497,10 +537,17 @@ class Game extends React.Component {
                         storage[level.index] = level;
                         localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage))
                     }}>Set and Reset</button>
+
                 </div>
+
+
+
                 <div id="typeName">
+
                     Name: <input id="levelName" />
+
                     <button onClick={() => { document.getElementById("typeName").style.display = "none"; document.getElementById("levelName").value = "" }}>Cancel</button>
+
                     <button onClick={() => {
                         var level = JSON.parse(JSON.stringify(this.state));
                         for (let i in level.initial) level[i] = level.initial[i];
@@ -511,26 +558,18 @@ class Game extends React.Component {
                         document.getElementById("levelName").value = "";
                         document.getElementById("typeName").style.display = "none";
                     }}>Save</button>
+
                 </div>
-                <div id="death">
-                    <div>
-                        <h1>You Died</h1>
-                        <p>Click the button below to reset the level</p>
-                        <button onClick={() => { document.getElementById("death").style.display = "none" }}>Reset</button>
-                    </div>
-                </div>
-                <div id="win">
-                    <div>
-                        <h1>You WON!</h1>
-                        <span>Congratulations! now click the button below to reset the level</span><br />
-                        <button onClick={() => { document.getElementById("win").style.display = "none" }}>Reset</button>
-                    </div>
-                </div>
+
+
+
                 <div id="changeBossStats">
+
                     X: <input type="number" id="bossX" />
                     Y: <input type="number" id="bossY" />
                     life: <input type="number" id="bossLife" />
                     damage: <input type="number" id="bossDamage" />
+
                     <button onClick={() => {
                         document.getElementById("bossX").value = "";
                         document.getElementById("bossY").value = "";
@@ -538,6 +577,7 @@ class Game extends React.Component {
                         document.getElementById("bossDamage").value = "";
                         document.getElementById("changeBossStats").style.display = "none";
                     }}>Cancel</button>
+
                     <button onClick={() => {
                         document.getElementById("changeBossStats").style.display = "none";
                         var boss = [document.getElementById("bossX").value, document.getElementById("bossY").value, document.getElementById("bossLife").value, document.getElementById("bossDamage").value];
@@ -553,9 +593,15 @@ class Game extends React.Component {
                         document.getElementById("bossLife").value = "";
                         document.getElementById("bossDamage").value = "";
                     }}>Change Stats</button>
+
                     <p>If you leave a space on blank it will set the previous value as default</p>
+
                 </div>
+
+
+
                 <div id="chooseLevel">
+
                     {
                         storage.map((info, index) => (
                             <div key={'Level' + index} onClick={() => { document.getElementById("chooseLevel").style.display = "none"; game.setState(JSON.parse(JSON.stringify(storage))[index]) }}>
@@ -575,8 +621,13 @@ class Game extends React.Component {
                             </div>
                         ))
                     }
+
                 </div>
+
+
+
                 <div id="chooseFloorToDelete">
+
                     {
                         this.state.playerStartingPositions.map((info, index) => <button onClick={() => {
                             var state = JSON.parse(JSON.stringify(this.state));
@@ -602,7 +653,9 @@ class Game extends React.Component {
                             document.getElementById("chooseFloorToDelete").style.display = "none";
                         }} key={"floorButtonToDelete " + (index + 1)}>{index + 1}</button>)
                     }
+
                     <button onClick={() => { document.getElementById("chooseFloorToDelete").style.display = "none" }}>Cancel</button>
+
                 </div>
 
 
@@ -641,6 +694,28 @@ class Game extends React.Component {
 
 
 
+
+
+
+
+
+                <div id="death">
+                    <div>
+                        <h1>You Died</h1>
+                        <p>Click the button below to reset the level</p>
+                        <button onClick={() => { document.getElementById("death").style.display = "none" }}>Reset</button>
+                    </div>
+                </div>
+
+
+
+                <div id="win">
+                    <div>
+                        <h1>You WON!</h1>
+                        <span>Congratulations! now click the button below to reset the level</span><br />
+                        <button onClick={() => { document.getElementById("win").style.display = "none" }}>Reset</button>
+                    </div>
+                </div>
 
 
 
@@ -698,9 +773,11 @@ class Game extends React.Component {
                         localStorage.setItem('_codepen.io_hernanmendez_roguelike_customGames', JSON.stringify(storage));
 
                     }}>Save Session</button>
+
                     <button onClick={() => { this.setState(JSON.parse(JSON.stringify(this.state.initial))); }}>Reset</button>
                     <button onClick={() => { document.getElementById("share").style.display = "block" }}>Share this Level</button>
                     <button onClick={() => { document.getElementById("copy").style.display = "block" }}>Download a Level</button>
+
                     {
                         this.state.edit ? (
                             <div>
@@ -710,6 +787,8 @@ class Game extends React.Component {
                                     document.getElementById('addAreaButton').style.display = "none";
                                     document.getElementById('addArea').style.display = "block";
                                 }}>Add Area</button>
+
+
                                 <button onClick={() => {
                                     if (able) {
                                         alert("Remenber to change the Boss position because it's always on the last floor");
@@ -727,15 +806,21 @@ class Game extends React.Component {
                                     state.initial.LifeObjs.push([]);
                                     this.setState(state);
                                 }}>Add Floor</button>
+
+
                                 {
                                     this.state.playerStartingPositions.map((info, index) => <button onClick={() => { game.setState({ floor: index, playerX: game.state.playerStartingPositions[index][0], playerY: game.state.playerStartingPositions[index][1] }); }} key={"floorButton " + (index + 1)}>{index + 1}</button>)
                                 }
+
+
                                 <button onClick={() => {
                                     if (able) {
                                         alert("Remenber to change the Boss position because it's always on the last floor");
                                         able = false;
                                     } if (this.state.positions.length > 1) document.getElementById("chooseFloorToDelete").style.display = "block";
                                 }}>Delete Floor</button>
+
+
                                 {
                                     (this.state.name != "unnamed") ? (<button onClick={() => {
                                         var level = JSON.parse(JSON.stringify(this.state));
@@ -747,6 +832,7 @@ class Game extends React.Component {
                                         :
                                         (<button onClick={() => { document.getElementById('typeName').style.display = "block"; }}>Save Current Custom Level As</button>)
                                 }
+
                                 <button onClick={() => {
                                     var level = JSON.parse(JSON.stringify(this.state));
                                     for (let i in level.initial) level[i] = level.initial[i];
@@ -761,25 +847,24 @@ class Game extends React.Component {
                                     this.forceUpdate();
                                 }}>Make a Copy of this level</button>
 
+
                                 <button onClick={() => { document.getElementById("addEnemy").style.display = "block" }}>Add Enemy</button>
                                 <button onClick={() => { document.getElementById("addWeapon").style.display = "block" }}>Add Weapon</button>
                                 <button onClick={() => { document.getElementById("addLifeObj").style.display = "block" }}>Add LifeObj</button>
                                 <button onClick={() => { document.getElementById("changeIniProp").style.display = "block" }}>Chage initial properties</button>
                                 <button onClick={() => { document.getElementById("changeIniPos").style.display = "block" }}>Change initial Position</button>
+
+
                                 {
                                     (this.state.floor == this.state.exit.length) ? (<button onClick={() => { document.getElementById("changeBossStats").style.display = "block"; }}>Change Boss Stats</button>) : (<button>Change Exit Position</button>)
                                 }
 
 
                                 <div id="addArea">
-                                    X:
-    <input id="addAreaInput1" type="number" />
-                                    Y:
-    <input id="addAreaInput2" type="number" />
-                                    Width:
-    <input id="addAreaInput3" type="number" />
-                                    height:
-    <input id="addAreaInput4" type="number" />
+                                    X:<input id="addAreaInput1" type="number" />
+                                    Y:<input id="addAreaInput2" type="number" />
+                                    Width:<input id="addAreaInput3" type="number" />
+                                    height:<input id="addAreaInput4" type="number" />
 
 
                                     <button onClick={() => {
@@ -823,12 +908,17 @@ class Game extends React.Component {
 
                 <div className="wrap">
                     <div className="game">
+
                         {
                             this.state.positions[this.state.floor].map((info, index) => (<Area x={info[0]} y={info[1]} width={info[2]} height={info[3]} edit={this.state.edit} index={index} key={index} game={this} />))
                         }
+
+
                         {
                             this.state.enemies[this.state.floor].map((info, index) => (<Enemies x={info[0]} y={info[1]} key={'enemy' + index} edit={this.state.edit} index={index} game={this} />))
                         }
+
+
                         {
                             this.state.floor == this.state.positions.length - 1 ? (
                                 <div style={{
@@ -842,13 +932,19 @@ class Game extends React.Component {
                                 }}></div>
                             ) : <Exit x={this.state.exit[this.state.floor][0]} y={this.state.exit[this.state.floor][1]} game={this} />
                         }
+
+
                         {
                             this.state.LifeObjs[this.state.floor].map((info, index) => (<LifeObj x={info[0]} y={info[1]} key={"lifeObj" + index} edit={this.state.edit} index={index} game={this} />))
                         }
+
+
                         {
                             this.state.weapons[this.state.floor].map((info, index) => (<Weapon x={info[0]} y={info[1]} key={'weapon' + index} edit={this.state.edit} index={index} game={this} />))
                         }
+
                     </div>
+
                     <div className='player' style={{
                         width: '1rem',
                         height: '1rem',
@@ -858,6 +954,7 @@ class Game extends React.Component {
                         top: this.state.y + this.state.playerY + 'rem',
                         zIndex: 9999
                     }}></div>
+                    
                 </div>
 
 
