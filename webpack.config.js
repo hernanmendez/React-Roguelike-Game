@@ -1,24 +1,16 @@
-var path = require('path');
-var webpack = require('webpack');
-
 module.exports = {
-    entry: './precomp.js',
+    entry: './js/precomp.js',
     output: {
-        path: __dirname,
-        filename: 'bundle.js'
+        filename: 'js/bundle.js'
     },
     watch: true,
     module: {
-        loaders: 
+        loaders:
         [
             {
-            test: /.jsx?$/,
-            loader: 'babel-loader',
-            exclude: /node_modules/,
-            query: {
-                presets: ['react']
+                loader: 'babel-loader',
+                exclude: /node_modules/
             }
-        }
         ]
     }
 };
